@@ -7,9 +7,9 @@ import java.util.List;
 /**
  * Created by matthewhug on 2/27/17.
  */
-//@Entity
-//@Table(name = "CVehicle", schema = "CMS")
-//@PrimaryKeyJoinColumn(name="id", referencedColumnName="id")
+@Entity
+@Table(name = "CVehicle", schema = "CMS")
+@PrimaryKeyJoinColumn(name="id", referencedColumnName="id")
 public class CVehicle extends InvHolder{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cvehicle_sequence")
@@ -22,20 +22,20 @@ public class CVehicle extends InvHolder{
     private Date lastMaintenance;
     private String status;
 
-    @ManyToMany
-    private List<CUser> currentUsers;
-
-    @ManyToMany
-    private List<CUser> pastUsers;
+    @ManyToOne
+    private CUser currentOwner;
 
     public CVehicle() {
     }
 
-    public CVehicle(String name, String make, String model, int year) {
-        this.setName(name);
+    public CVehicle(String make, String model, int year, long mileage, Date lastMaintenance, String status, CUser currentOwner) {
         this.make = make;
         this.model = model;
         this.year = year;
+        this.mileage = mileage;
+        this.lastMaintenance = lastMaintenance;
+        this.status = status;
+        this.currentOwner = currentOwner;
     }
 
     public long getId() {
@@ -68,5 +68,37 @@ public class CVehicle extends InvHolder{
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public long getMileage() {
+        return mileage;
+    }
+
+    public void setMileage(long mileage) {
+        this.mileage = mileage;
+    }
+
+    public Date getLastMaintenance() {
+        return lastMaintenance;
+    }
+
+    public void setLastMaintenance(Date lastMaintenance) {
+        this.lastMaintenance = lastMaintenance;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public CUser getCurrentOwner() {
+        return currentOwner;
+    }
+
+    public void setCurrentOwner(CUser currentOwner) {
+        this.currentOwner = currentOwner;
     }
 }

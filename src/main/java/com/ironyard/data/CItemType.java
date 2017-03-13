@@ -15,6 +15,7 @@ public class CItemType {
     private String name;
     private boolean active;
     private String unitOfMeasurement;
+    private double costPerUnit;
 
     @ManyToOne
     private CUser createdBy;
@@ -22,7 +23,7 @@ public class CItemType {
     public CItemType() {
     }
 
-    public CItemType(String name, boolean status, String unitOfMeasurement, CUser createdBy) {
+    public CItemType(String name, boolean status, String unitOfMeasurement, double costPerUnit, CUser createdBy) {
         this.name = name;
         this.active = status;
         this.unitOfMeasurement = unitOfMeasurement;
@@ -59,6 +60,14 @@ public class CItemType {
 
     public void setUnitOfMeasurement(String unitOfMeasurement) {
         this.unitOfMeasurement = unitOfMeasurement;
+    }
+
+    public double getCostPerUnit() {
+        return costPerUnit;
+    }
+
+    public void setCostPerUnit(double costPerUnit) {
+        this.costPerUnit = costPerUnit;
     }
 
     public CUser getCreatedBy() {

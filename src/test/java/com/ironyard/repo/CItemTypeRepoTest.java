@@ -33,7 +33,7 @@ public class CItemTypeRepoTest {
         CUser cu = new CUser("TestFirstName", "TestLastName", "TestUserName", "TestPassword", "test@email.com", "123-456-7890", "BASIC", true, ca);
         cUserRepo.save(cu);
 
-        CItemType cit = new CItemType("Mastic", true, "Bucket", cu);
+        CItemType cit = new CItemType("Mastic", true, "Bucket", 10.99, cu);
         cItemTypeRepo.save(cit);
 
         CItemType citCheck = cItemTypeRepo.findOne(cit.getId());
@@ -42,6 +42,7 @@ public class CItemTypeRepoTest {
         assertEquals("Database does not match saved CItemType name", cit.getName(), citCheck.getName());
         assertEquals("Database does not match saved CItemType active", cit.isActive(), citCheck.isActive());
         assertEquals("Database does not match saved CItemType unit of measurement", cit.getUnitOfMeasurement(), citCheck.getUnitOfMeasurement());
+        assertEquals("Database does not match saved CItemType cost per unit", cit.getCostPerUnit(), citCheck.getCostPerUnit(), 0.0001);
         assertEquals("Database does not match saved CItemType created by User first name", cit.getCreatedBy().getFirstName(), citCheck.getCreatedBy().getFirstName());
         assertEquals("Database does not match saved CItemType created by User last name", cit.getCreatedBy().getLastName(), citCheck.getCreatedBy().getLastName());
         assertEquals("Database does not match saved CItemType created by User username", cit.getCreatedBy().getUsername(), citCheck.getCreatedBy().getUsername());

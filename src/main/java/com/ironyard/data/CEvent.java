@@ -27,6 +27,15 @@ public class CEvent {
     @ManyToOne
     private CItemType cItemTypeEvent;
 
+    @ManyToOne
+    private CItem cItemEvent;
+
+    @ManyToOne
+    private CWarehouse cWarehouseEvent;
+
+    @ManyToOne
+    private CJob cJobEvent;
+
     public CEvent() {
     }
 
@@ -42,6 +51,27 @@ public class CEvent {
         this.eventAction = eventAction;
         this.createdBy = createdBy;
         this.cItemTypeEvent = cItemTypeEvent;
+    }
+
+    public CEvent(Date timeStamp, String eventAction, CUser createdBy, CItem cItemEvent) {
+        this.timeStamp = timeStamp;
+        this.eventAction = eventAction;
+        this.createdBy = createdBy;
+        this.cItemEvent = cItemEvent;
+    }
+
+    public CEvent(Date timeStamp, String eventAction, CUser createdBy, CWarehouse cWarehouseEvent) {
+        this.timeStamp = timeStamp;
+        this.eventAction = eventAction;
+        this.createdBy = createdBy;
+        this.cWarehouseEvent = cWarehouseEvent;
+    }
+
+    public CEvent(Date timeStamp, String eventAction, CUser createdBy, CJob cJobEvent) {
+        this.timeStamp = timeStamp;
+        this.eventAction = eventAction;
+        this.createdBy = createdBy;
+        this.cJobEvent = cJobEvent;
     }
 
     public long getId() {
@@ -91,4 +121,21 @@ public class CEvent {
     public void setcItemTypeEvent(CItemType cItemTypeEvent) {
         this.cItemTypeEvent = cItemTypeEvent;
     }
+
+    public CItem getcItemEvent() {
+        return cItemEvent;
+    }
+
+    public void setcItemEvent(CItem cItemEvent) {
+        this.cItemEvent = cItemEvent;
+    }
+
+    public CWarehouse getcWarehouseEvent() {
+        return cWarehouseEvent;
+    }
+
+    public void setcWarehouseEvent(CWarehouse cWarehouseEvent) {
+        this.cWarehouseEvent = cWarehouseEvent;
+    }
 }
+
