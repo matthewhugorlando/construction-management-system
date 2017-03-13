@@ -26,7 +26,7 @@ public class CUserRepoTest {
     public void saveUser(){
         CAddress ca = new CAddress("123 User Test Street", "Orlando", "FL", "32819");
 
-        CUser cu = new CUser("TestFirstName", "TestLastName", "TestUserName", "TestPassword", "test@email.com", "123-456-7890", "BASIC", "ACTIVE", ca);
+        CUser cu = new CUser("TestFirstName", "TestLastName", "TestUserName", "TestPassword", "test@email.com", "123-456-7890", "BASIC", true, ca);
 
         cUserRepo.save(cu);
 
@@ -39,7 +39,7 @@ public class CUserRepoTest {
         assertEquals("Database does not match saved User email", cu.getEmail(), cuCheck.getEmail());
         assertEquals("Database does not match saved User phone number", cu.getPhoneNumber(), cuCheck.getPhoneNumber());
         assertEquals("Database does not match saved User permission level", cu.getPermissionLevel(), cuCheck.getPermissionLevel());
-        assertEquals("Database does not match saved User status", cu.getStatus(), cuCheck.getStatus());
+        assertEquals("Database does not match saved User status", cu.isActive(), cuCheck.isActive());
         assertEquals("Database does not match saved User Address street", cu.getCurrentAddress().getStreet(), cuCheck.getCurrentAddress().getStreet());
         assertEquals("Database does not match saved User Address city", cu.getCurrentAddress().getCity(), cuCheck.getCurrentAddress().getCity());
         assertEquals("Database does not match saved User Address state", cu.getCurrentAddress().getState(), cuCheck.getCurrentAddress().getState());

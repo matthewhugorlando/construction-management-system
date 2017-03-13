@@ -20,7 +20,7 @@ public class CUser {
     private String email;
     private String phoneNumber;
     private String permissionLevel;
-    private String status;
+    private boolean active;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private CAddress currentAddress;
@@ -38,7 +38,7 @@ public class CUser {
     public CUser() {
     }
 
-    public CUser(String firstName, String lastName, String username, String password, String email, String phoneNumber, String permissionLevel, String status, CAddress currentAddress) {
+    public CUser(String firstName, String lastName, String username, String password, String email, String phoneNumber, String permissionLevel, boolean active, CAddress currentAddress) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -46,7 +46,7 @@ public class CUser {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.permissionLevel = permissionLevel;
-        this.status = status;
+        this.active = active;
         this.currentAddress = currentAddress;
     }
 
@@ -114,12 +114,12 @@ public class CUser {
         this.permissionLevel = permissionLevel;
     }
 
-    public String getStatus() {
-        return status;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public CAddress getCurrentAddress() {

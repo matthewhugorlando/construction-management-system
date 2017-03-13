@@ -13,21 +13,35 @@ public class CEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cevent_sequence")
-    @SequenceGenerator(name="cevent_sequence", sequenceName = "cevent_sequence", schema = "CMS")
+    @SequenceGenerator(name = "cevent_sequence", sequenceName = "cevent_sequence", schema = "CMS")
     private long id;
     private Date timeStamp;
-    private String objType;
-    private long objId;
     private String eventAction;
+
+    @ManyToOne
+    private CUser createdBy;
+
+    @ManyToOne
+    private CUser cUserEvent;
+
+    @ManyToOne
+    private CItemType cItemTypeEvent;
 
     public CEvent() {
     }
 
-    public CEvent(Date timeStamp, String objType, long objId, String eventAction) {
+    public CEvent(Date timeStamp, String eventAction, CUser createdBy, CUser cUserEvent) {
         this.timeStamp = timeStamp;
-        this.objType = objType;
-        this.objId = objId;
         this.eventAction = eventAction;
+        this.createdBy = createdBy;
+        this.cUserEvent = cUserEvent;
+    }
+
+    public CEvent(Date timeStamp, String eventAction, CUser createdBy, CItemType cItemTypeEvent) {
+        this.timeStamp = timeStamp;
+        this.eventAction = eventAction;
+        this.createdBy = createdBy;
+        this.cItemTypeEvent = cItemTypeEvent;
     }
 
     public long getId() {
@@ -46,27 +60,35 @@ public class CEvent {
         this.timeStamp = timeStamp;
     }
 
-    public String getObjType() {
-        return objType;
-    }
-
-    public void setObjType(String objType) {
-        this.objType = objType;
-    }
-
-    public long getObjId() {
-        return objId;
-    }
-
-    public void setObjId(long objId) {
-        this.objId = objId;
-    }
-
     public String getEventAction() {
         return eventAction;
     }
 
     public void setEventAction(String eventAction) {
         this.eventAction = eventAction;
+    }
+
+    public CUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(CUser createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public CUser getcUserEvent() {
+        return cUserEvent;
+    }
+
+    public void setcUserEvent(CUser cUserEvent) {
+        this.cUserEvent = cUserEvent;
+    }
+
+    public CItemType getcItemTypeEvent() {
+        return cItemTypeEvent;
+    }
+
+    public void setcItemTypeEvent(CItemType cItemTypeEvent) {
+        this.cItemTypeEvent = cItemTypeEvent;
     }
 }
