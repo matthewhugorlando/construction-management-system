@@ -22,7 +22,7 @@ public class InvHolder {
     private CAddress location;
 
     @OneToMany
-    private List<CItem> inventory;
+    private List<CItemBucket> inventory;
 
     public long getId() {
         return id;
@@ -48,11 +48,11 @@ public class InvHolder {
         this.location = location;
     }
 
-    public List<CItem> getInventory() {
+    public List<CItemBucket> getInventory() {
         return inventory;
     }
 
-    public void setInventory(List<CItem> inventory) {
+    public void setInventory(List<CItemBucket> inventory) {
         this.inventory = inventory;
     }
 }

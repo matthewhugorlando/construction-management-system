@@ -12,7 +12,6 @@ public class CItem {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "citem_sequence")
     @SequenceGenerator(name="citem_sequence", sequenceName = "citem_sequence", schema = "CMS")
     private long id;
-    private int quantity;
     private String status;
 
     @ManyToOne
@@ -21,8 +20,7 @@ public class CItem {
     public CItem() {
     }
 
-    public CItem(int quantity, String status, CItemType itemType) {
-        this.quantity = quantity;
+    public CItem(String status, CItemType itemType) {
         this.status = status;
         this.itemType = itemType;
     }
@@ -35,13 +33,6 @@ public class CItem {
         this.id = id;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 
     public String getStatus() {
         return status;
