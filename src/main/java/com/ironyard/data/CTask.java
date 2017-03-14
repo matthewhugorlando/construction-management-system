@@ -7,11 +7,11 @@ import java.util.Date;
  * Created by matthewhug on 3/8/17.
  */
 @Entity
-@Table(name = "CTask", schema = "CMS")
+@Table(name = "CTask")
 public class CTask {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ctask_sequence")
-    @SequenceGenerator(name="ctask_sequence", sequenceName = "ctask_sequence", schema = "CMS")
+    @SequenceGenerator(name="ctask_sequence", sequenceName = "ctask_sequence")
     private long id;
     private String name;
     @Column(length = 1000)

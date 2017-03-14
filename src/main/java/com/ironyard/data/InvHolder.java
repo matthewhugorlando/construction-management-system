@@ -9,12 +9,12 @@ import java.util.List;
  * Created by matthewhug on 2/27/17.
  */
 @Entity
-@Table(name = "InvHolder", schema = "CMS")
+@Table(name = "InvHolder")
 @Inheritance(strategy=InheritanceType.JOINED)
 public class InvHolder {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invholder_sequence")
-    @SequenceGenerator(name="invholder_sequence", sequenceName = "invholder_sequence", schema = "CMS")
+    @SequenceGenerator(name="invholder_sequence", sequenceName = "invholder_sequence")
     private long id;
     private String name;
 

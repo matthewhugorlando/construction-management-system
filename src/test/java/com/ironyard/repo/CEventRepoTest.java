@@ -130,7 +130,7 @@ public class CEventRepoTest {
 
         CItemType cit = new CItemType("12-inch Flex", true, "bag", 24.99, cu1);
 
-        CItem ci = new CItem(3, "PENDING", cit);
+        CItem ci = new CItem("PENDING", cit);
 
         CEvent ce = new CEvent(now, "CREATED", cu1, ci);
         cEventRepo.save(ce);
@@ -152,7 +152,6 @@ public class CEventRepoTest {
         assertEquals("Database does not match saved CEvent created by User Address state", ce.getCreatedBy().getCurrentAddress().getState(), ceCheck.getCreatedBy().getCurrentAddress().getState());
         assertEquals("Database does not match saved CEvent created by User Address zip", ce.getCreatedBy().getCurrentAddress().getZipCode(), ceCheck.getCreatedBy().getCurrentAddress().getZipCode());
 
-        assertEquals("Database does not match saved CItem quantity", ce.getcItemEvent().getQuantity(), ceCheck.getcItemEvent().getQuantity());
         assertEquals("Database does not match saved CItem status", ce.getcItemEvent().getStatus(), ceCheck.getcItemEvent().getStatus());
         assertEquals("Database does not match saved CItem CItemType name", ce.getcItemEvent().getItemType().getName(), ceCheck.getcItemEvent().getItemType().getName());
         assertEquals("Database does not match saved CItem CItemType active", ce.getcItemEvent().getItemType().isActive(), ceCheck.getcItemEvent().getItemType().isActive());

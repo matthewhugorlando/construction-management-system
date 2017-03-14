@@ -7,13 +7,13 @@ import java.util.Date;
  * Created by matthewhug on 3/10/17.
  */
 @Entity
-@Table(name = "CEvent", schema = "CMS")
+@Table(name = "CEvent")
 @PrimaryKeyJoinColumn(name="id", referencedColumnName="id")
 public class CEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cevent_sequence")
-    @SequenceGenerator(name = "cevent_sequence", sequenceName = "cevent_sequence", schema = "CMS")
+    @SequenceGenerator(name = "cevent_sequence", sequenceName = "cevent_sequence")
     private long id;
     private Date timeStamp;
     private String eventAction;

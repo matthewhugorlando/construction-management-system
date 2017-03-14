@@ -6,12 +6,12 @@ import javax.persistence.*;
  * Created by matthewhug on 2/27/17.
  */
 @Entity
-@Table(name = "CWarehouse", schema = "CMS")
+@Table(name = "CWarehouse")
 @PrimaryKeyJoinColumn(name="id", referencedColumnName="id")
 public class CWarehouse extends InvHolder {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cwarehouse_sequence")
-    @SequenceGenerator(name="cwarehouse_sequence", sequenceName = "cwarehouse_sequence", schema = "CMS")
+    @SequenceGenerator(name="cwarehouse_sequence", sequenceName = "cwarehouse_sequence")
     private long id;
     private boolean active;
     // Possibly add manager?

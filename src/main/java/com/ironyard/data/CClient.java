@@ -6,12 +6,12 @@ import javax.persistence.*;
  * Created by matthewhug on 3/13/17.
  */
 @Entity
-@Table(name = "CClient", schema = "CMS")
+@Table(name = "CClient")
 public class CClient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cclient_sequence")
-    @SequenceGenerator(name="cclient_sequence", sequenceName = "cclient_sequence", schema = "CMS")
+    @SequenceGenerator(name="cclient_sequence", sequenceName = "cclient_sequence")
     private long id;
     private String name;
     private String contactFirstName;

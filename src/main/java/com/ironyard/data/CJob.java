@@ -8,12 +8,12 @@ import java.util.List;
  * Created by matthewhug on 3/8/17.
  */
 @Entity
-@Table(name = "CJob", schema = "CMS")
+@Table(name = "CJob")
 @PrimaryKeyJoinColumn(name="id", referencedColumnName="id")
 public class CJob extends InvHolder{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cjob_sequence")
-    @SequenceGenerator(name="cjob_sequence", sequenceName = "cjob_sequence", schema = "CMS")
+    @SequenceGenerator(name="cjob_sequence", sequenceName = "cjob_sequence")
     private long id;
     private Date startDate;
     private Date endDate;

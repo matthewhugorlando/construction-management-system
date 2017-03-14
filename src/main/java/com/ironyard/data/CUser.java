@@ -7,11 +7,11 @@ import java.util.List;
  * Created by matthewhug on 3/8/17.
  */
 @Entity
-@Table(name = "CUser", schema = "CMS")
+@Table(name = "CUser")
 public class CUser {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cuser_sequence")
-    @SequenceGenerator(name="cuser_sequence", sequenceName = "cuser_sequence", schema = "CMS")
+    @SequenceGenerator(name="cuser_sequence", sequenceName = "cuser_sequence")
     private long id;
     private String firstName;
     private String lastName;

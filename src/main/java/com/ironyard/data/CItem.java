@@ -6,11 +6,11 @@ import javax.persistence.*;
  * Created by matthewhug on 3/9/17.
  */
 @Entity
-@Table(name = "CItem", schema = "CMS")
+@Table(name = "CItem")
 public class CItem {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "citem_sequence")
-    @SequenceGenerator(name="citem_sequence", sequenceName = "citem_sequence", schema = "CMS")
+    @SequenceGenerator(name="citem_sequence", sequenceName = "citem_sequence")
     private long id;
     private String status;
 

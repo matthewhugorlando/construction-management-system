@@ -7,11 +7,11 @@ import java.util.List;
  * Created by matthewhug on 3/14/17.
  */
 @Entity
-@Table(name = "CItemBucket", schema = "CMS")
+@Table(name = "CItemBucket")
 public class CItemBucket {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "citembucket_sequence")
-    @SequenceGenerator(name="citembucket_sequence", sequenceName = "citembucket_sequence", schema = "CMS")
+    @SequenceGenerator(name="citembucket_sequence", sequenceName = "citembucket_sequence")
     private long id;
     private int quantity;
     private String status;

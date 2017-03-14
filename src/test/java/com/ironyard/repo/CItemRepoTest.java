@@ -40,12 +40,11 @@ public class CItemRepoTest {
         CItemType cit = new CItemType("Mastic", true, "Bucket", 10.00, cu);
         cItemTypeRepo.save(cit);
 
-        CItem ci = new CItem(2, "PENDING", cit);
+        CItem ci = new CItem("PENDING", cit);
         cItemRepo.save(ci);
 
         CItem ciCheck = cItemRepo.findOne(ci.getId());
 
-        assertEquals("Database does not match saved CItem quantity", ci.getQuantity(), ciCheck.getQuantity());
         assertEquals("Database does not match saved CItem status", ci.getStatus(), ciCheck.getStatus());
         assertEquals("Database does not match saved CItem CItemType name", ci.getItemType().getName(), ciCheck.getItemType().getName());
         assertEquals("Database does not match saved CItem CItemType active", ci.getItemType().isActive(), ciCheck.getItemType().isActive());

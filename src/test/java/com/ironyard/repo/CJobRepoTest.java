@@ -54,13 +54,13 @@ public class CJobRepoTest {
         CItemType cit1 = new CItemType("Mastic", true, "Bucket", 10.00, cu1);
         cItemTypeRepo.save(cit1);
 
-        CItem ci1 = new CItem(2, "PENDING", cit1);
+        CItem ci1 = new CItem("PENDING", cit1);
         cItemRepo.save(ci1);
 
         CItemType cit2 = new CItemType("12-inch Flex", true, "Bag", 20.99, cu1);
         cItemTypeRepo.save(cit2);
 
-        CItem ci2 = new CItem(4, "PENDING", cit2);
+        CItem ci2 = new CItem("PENDING", cit2);
         cItemRepo.save(ci2);
 
         CClient cc = new CClient("Test Client", "ClientFN", "ClientLN", "4075678912", "client@email.com", ca);
