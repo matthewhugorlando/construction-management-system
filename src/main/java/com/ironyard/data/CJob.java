@@ -1,5 +1,7 @@
 package com.ironyard.data;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +17,7 @@ public class CJob extends InvHolder{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cjob_sequence")
     @SequenceGenerator(name="cjob_sequence", sequenceName = "cjob_sequence")
     private long id;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date startDate;
     private Date endDate;
     private String status;
@@ -33,9 +36,33 @@ public class CJob extends InvHolder{
     private CClient client;
 
     @OneToMany
-    List<CTask> tasks;
+    private List<CTask> tasks;
 
     public CJob() {
+    }
+
+    public CJob(String name, Date startDate, String status, double jobPrice) {
+        this.setName(name);
+        this.startDate = startDate;
+        this.status = status;
+        this.jobPrice = jobPrice;
+    }
+
+    public CJob(String name, Date startDate, String status, double jobPrice, CClient client) {
+        this.setName(name);
+        this.startDate = startDate;
+        this.status = status;
+        this.jobPrice = jobPrice;
+        this.client = client;
+    }
+
+    public CJob(String name, Date startDate, String status, double jobPrice, List<CUser> workedOnBy, CClient client) {
+        this.setName(name);
+        this.startDate = startDate;
+        this.status = status;
+        this.jobPrice = jobPrice;
+        this.workedOnBy = workedOnBy;
+        this.client = client;
     }
 
     public CJob(Date start, String status, double jobPrice, CUser createdBy, List<CUser> workedOnBy, CClient client) {

@@ -22,6 +22,17 @@ public class CClient {
     @ManyToOne
     private CAddress address;
 
+    public CClient() {
+    }
+
+    public CClient(String name, String contactFirstName, String contactLastName, String contactPhoneNumber, String contactEmail) {
+        this.name = name;
+        this.contactFirstName = contactFirstName;
+        this.contactLastName = contactLastName;
+        this.contactPhoneNumber = contactPhoneNumber;
+        this.contactEmail = contactEmail;
+    }
+
     public CClient(String name, String contactFirstName, String contactLastName, String contactPhoneNumber, String contactEmail, CAddress address) {
         this.name = name;
         this.contactFirstName = contactFirstName;

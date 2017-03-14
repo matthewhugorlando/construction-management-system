@@ -38,6 +38,17 @@ public class CUser {
     public CUser() {
     }
 
+    public CUser(String firstName, String lastName, String username, String password, String email, String phoneNumber, String permissionLevel, boolean active) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.permissionLevel = permissionLevel;
+        this.active = active;
+    }
+
     public CUser(String firstName, String lastName, String username, String password, String email, String phoneNumber, String permissionLevel, boolean active, CAddress currentAddress) {
         this.firstName = firstName;
         this.lastName = lastName;

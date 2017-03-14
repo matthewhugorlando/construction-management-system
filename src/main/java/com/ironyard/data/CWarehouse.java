@@ -14,10 +14,14 @@ public class CWarehouse extends InvHolder {
     @SequenceGenerator(name="cwarehouse_sequence", sequenceName = "cwarehouse_sequence")
     private long id;
     private boolean active;
-    // Possibly add manager?
 
 
     public CWarehouse() {
+    }
+
+    public CWarehouse(String name, boolean active) {
+        this.setName(name);
+        this.active = active;
     }
 
     public CWarehouse(String name, CAddress location, boolean active) {

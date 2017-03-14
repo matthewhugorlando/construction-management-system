@@ -23,9 +23,16 @@ public class CItemType {
     public CItemType() {
     }
 
-    public CItemType(String name, boolean status, String unitOfMeasurement, double costPerUnit, CUser createdBy) {
+    public CItemType(String name, boolean active, String unitOfMeasurement, double costPerUnit) {
         this.name = name;
-        this.active = status;
+        this.active = active;
+        this.unitOfMeasurement = unitOfMeasurement;
+        this.costPerUnit = costPerUnit;
+    }
+
+    public CItemType(String name, boolean active, String unitOfMeasurement, double costPerUnit, CUser createdBy) {
+        this.name = name;
+        this.active = active;
         this.unitOfMeasurement = unitOfMeasurement;
         this.createdBy = createdBy;
     }

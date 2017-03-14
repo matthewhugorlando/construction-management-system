@@ -1,5 +1,9 @@
 package com.ironyard.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -15,6 +19,7 @@ public class CItemBucket {
     private long id;
     private int quantity;
     private String status;
+    private Double totalCost;
 
     @ManyToOne
     private CItemType bucketType;
@@ -23,7 +28,20 @@ public class CItemBucket {
     private List<CItem> items;
 
     @ManyToOne
+    @JsonManagedReference
     private InvHolder location;
+
+    public CItemBucket() {
+    }
+
+    public CItemBucket(int quantity, String status, Double totalCost, CItemType bucketType, List<CItem> items, InvHolder location) {
+        this.quantity = quantity;
+        this.status = status;
+        this.totalCost = totalCost;
+        this.bucketType = bucketType;
+        this.items = items;
+        this.location = location;
+    }
 
     public long getId() {
         return id;
@@ -47,6 +65,14 @@ public class CItemBucket {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Double getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(Double totalCost) {
+        this.totalCost = totalCost;
     }
 
     public CItemType getBucketType() {

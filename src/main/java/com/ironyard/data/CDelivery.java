@@ -16,6 +16,7 @@ public class CDelivery extends InvHolder {
     @SequenceGenerator(name="cjob_sequence", sequenceName = "cjob_sequence")
     private long id;
     private Date deliveryDate;
+    private String status;
     private String deliveredBy;
 
     @ManyToOne
@@ -40,6 +41,14 @@ public class CDelivery extends InvHolder {
 
     public void setDeliveryDate(Date deliveryDate) {
         this.deliveryDate = deliveryDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getDeliveredBy() {

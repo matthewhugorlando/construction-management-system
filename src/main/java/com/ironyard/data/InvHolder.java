@@ -1,5 +1,6 @@
 package com.ironyard.data;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class InvHolder {
     private CAddress location;
 
     @OneToMany
+    @JsonBackReference
     private List<CItemBucket> inventory;
 
     public long getId() {
