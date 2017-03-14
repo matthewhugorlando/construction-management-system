@@ -32,6 +32,9 @@ public class CJob extends InvHolder{
     @ManyToOne
     private CClient client;
 
+    @OneToMany
+    List<CTask> tasks;
+
     public CJob() {
     }
 
@@ -127,5 +130,13 @@ public class CJob extends InvHolder{
 
     public void setClient(CClient client) {
         this.client = client;
+    }
+
+    public List<CTask> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<CTask> tasks) {
+        this.tasks = tasks;
     }
 }

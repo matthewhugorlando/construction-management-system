@@ -29,6 +29,77 @@ public class CTask {
     @ManyToOne
     private CJob job;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public Date getPostDate() {
+        return postDate;
+    }
+
+    public void setPostDate(Date postDate) {
+        this.postDate = postDate;
+    }
+
+    public Date getCompletedDate() {
+        return completedDate;
+    }
+
+    public void setCompletedDate(Date completedDate) {
+        this.completedDate = completedDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public CUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(CUser createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public CUser getCompletedBy() {
+        return completedBy;
+    }
+
+    public void setCompletedBy(CUser completedBy) {
+        this.completedBy = completedBy;
+    }
+
+    public CJob getJob() {
+        return job;
+    }
+
+    public void setJob(CJob job) {
+        this.job = job;
+    }
 }
 //
 //@Id
