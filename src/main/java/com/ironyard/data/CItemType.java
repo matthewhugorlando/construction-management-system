@@ -12,6 +12,7 @@ public class CItemType {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "citemtype_sequence")
     @SequenceGenerator(name="citemtype_sequence", sequenceName = "citemtype_sequence")
     private long id;
+    @Column(unique=true)
     private String name;
     private boolean active;
     private String unitOfMeasurement;

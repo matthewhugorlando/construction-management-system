@@ -13,6 +13,7 @@ public class CClient {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cclient_sequence")
     @SequenceGenerator(name="cclient_sequence", sequenceName = "cclient_sequence")
     private long id;
+    @Column(unique=true)
     private String name;
     private String contactFirstName;
     private String contactLastName;

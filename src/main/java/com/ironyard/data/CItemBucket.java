@@ -1,5 +1,6 @@
 package com.ironyard.data;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,10 +29,17 @@ public class CItemBucket {
     private List<CItem> items;
 
     @ManyToOne
-    @JsonManagedReference
+    @JsonBackReference
     private InvHolder location;
 
     public CItemBucket() {
+    }
+
+    public CItemBucket(int quantity, String status, CItemType bucketType, InvHolder location) {
+        this.quantity = quantity;
+        this.status = status;
+        this.bucketType = bucketType;
+        this.location = location;
     }
 
     public CItemBucket(int quantity, String status, Double totalCost, CItemType bucketType, List<CItem> items, InvHolder location) {

@@ -31,5 +31,15 @@ public class CUserController {
         return newUser;
     }
 
+    @RequestMapping(path = "/user/list", method = RequestMethod.GET)
+    public Iterable<CUser> listUsers(){
+        return cUserRepo.findAll();
+    }
+
+    @RequestMapping(path = "/user/select", method = RequestMethod.GET)
+    public CUser findUser(@RequestParam Long id){
+        return cUserRepo.findOne(id);
+    }
+
 
 }

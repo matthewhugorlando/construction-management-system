@@ -23,4 +23,17 @@ public class CWarehouseController {
         cWarehouseRepo.save(cw);
         return cw;
     }
+
+    @RequestMapping(path = "/warehouse/list", method = RequestMethod.GET)
+    public Iterable<CWarehouse> listWarehouses(){
+        return cWarehouseRepo.findAll();
+    }
+
+    @RequestMapping(path = "/warehouse/select", method = RequestMethod.GET)
+    public CWarehouse findWarehouse(@RequestParam Long id){
+        return cWarehouseRepo.findOne(id);
+    }
+
+
+
 }

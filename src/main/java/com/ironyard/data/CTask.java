@@ -18,7 +18,7 @@ public class CTask {
     private String body;
     private Date postDate;
     private Date completedDate;
-    private String status;
+    private boolean completed;
 
     @ManyToOne
     private CUser createdBy;
@@ -28,6 +28,18 @@ public class CTask {
 
     @ManyToOne
     private CJob job;
+
+    public CTask() {
+    }
+
+    public CTask(String name, String body, Date postDate, boolean completed, CUser createdBy, CJob job) {
+        this.name = name;
+        this.body = body;
+        this.postDate = postDate;
+        this.completed = completed;
+        this.createdBy = createdBy;
+        this.job = job;
+    }
 
     public long getId() {
         return id;
@@ -69,12 +81,12 @@ public class CTask {
         this.completedDate = completedDate;
     }
 
-    public String getStatus() {
-        return status;
+    public boolean isCompleted() {
+        return completed;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     public CUser getCreatedBy() {

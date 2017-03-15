@@ -1,6 +1,7 @@
 package com.ironyard.data;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
@@ -17,13 +18,14 @@ public class InvHolder {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invholder_sequence")
     @SequenceGenerator(name="invholder_sequence", sequenceName = "invholder_sequence")
     private long id;
+    @Column(unique=true)
     private String name;
 
     @ManyToOne
     private CAddress location;
 
     @OneToMany
-    @JsonBackReference
+    @JsonManagedReference
     private List<CItemBucket> inventory;
 
     public long getId() {

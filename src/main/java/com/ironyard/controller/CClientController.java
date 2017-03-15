@@ -29,4 +29,14 @@ public class CClientController {
 
         return cc;
     }
+
+    @RequestMapping(path = "/client/list", method = RequestMethod.GET)
+    public Iterable<CClient> listClients(){
+        return cClientRepo.findAll();
+    }
+
+    @RequestMapping(path = "/client/select", method = RequestMethod.GET)
+    public CClient findClient(@RequestParam Long id){
+        return cClientRepo.findOne(id);
+    }
 }

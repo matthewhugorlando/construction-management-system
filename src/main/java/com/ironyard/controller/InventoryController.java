@@ -52,16 +52,29 @@ public class InventoryController {
         return cit;
     }
 
+    @RequestMapping(path = "/itemtype/list", method = RequestMethod.GET)
+    public Iterable<CItemType> listItemTypes(){
+        return cItemTypeRepo.findAll();
+    }
+
     @RequestMapping(path = "/item/new", method = RequestMethod.POST)
     public CItemBucket addItems(@RequestParam Integer quantity,
                                @RequestParam String status,
                                @RequestParam String type,
                                @RequestParam String loc){
 
-        List<CItem> cis = new ArrayList<>();
+        List<CItem> cis;
 
         CItemType cit = cItemTypeRepo.findByName(type);
         InvHolder location = invHolderRepo.findByName(loc);
+        CItemBucket cib = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId(type, location.getId(), cit.getId());
+
+        if(cib != null){
+            cis = cib.getItems();
+        }else{
+            cis = new ArrayList<>();
+            cib = new CItemBucket(quantity, status, cit, location);
+        }
 
         for(int i=0; i<quantity; i++){
             CItem ci = new CItem(status, cit);
@@ -71,8 +84,10 @@ public class InventoryController {
 
         Double totalCost = cis.size() * cit.getCostPerUnit();
 
-        CItemBucket cib = new CItemBucket(quantity, status, totalCost, cit, cis, location);
+        cib.setTotalCost(totalCost);
+        cib.setItems(cis);
         cItemBucketRepo.save(cib);
+
         if(location.getInventory() != null) {
             location.getInventory().add(cib);
         }else{
@@ -86,7 +101,12 @@ public class InventoryController {
         return cib;
     }
 
-    @RequestMapping(path = "item/move", method = RequestMethod.POST)
+    @RequestMapping(path = "/item/list", method = RequestMethod.GET)
+    public Iterable<CItem> listItems(){
+        return cItemRepo.findAll();
+    }
+
+    @RequestMapping(path = "/item/move", method = RequestMethod.POST)
     public CItemBucket moveItems(@RequestParam Long dLoc,
                                  @RequestParam String sLoc,
                                  @RequestParam String itemType,
@@ -95,24 +115,46 @@ public class InventoryController {
         InvHolder destLoc = invHolderRepo.findOne(dLoc);
         InvHolder startLoc = invHolderRepo.findByName(sLoc);
         CItemType cit = cItemTypeRepo.findByName(itemType);
-        CItemBucket startCIB = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("ONSITE", startLoc.getId(), cit.getId());
+        CItemBucket startCIB = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("On Site", startLoc.getId(), cit.getId());
         List<CItem> startCIs = startCIB.getItems();
-        List<CItem> destCIs = new ArrayList<>();
+
+        CItemBucket destCIB;
+        List<CItem> destCIs;
+        boolean destCIBExists = false;
+        if(cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("Pending Delivery", dLoc, cit.getId()) != null){
+            destCIBExists=true;
+            destCIB = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("Pending Delivery", dLoc, cit.getId());
+            destCIs = destCIB.getItems();
+        }else{
+            destCIs = new ArrayList<>();
+            destCIB = new CItemBucket();
+        }
 
         for(int i=0; i<quantity; i++){
             CItem ci = startCIs.get(startCIs.size() - 1);
+            ci.setStatus("Pending Delivery");
             destCIs.add(ci);
             startCIs.remove(startCIs.size() - 1);
         }
         startCIB.setItems(startCIs);
         cItemBucketRepo.save(startCIB);
 
-        Double totalCost = startCIB.getBucketType().getCostPerUnit()*quantity;
+        Double totalCost = startCIB.getBucketType().getCostPerUnit()*destCIs.size();
 
-        CItemBucket destCIB = new CItemBucket(quantity, "DELIVER", totalCost, startCIB.getBucketType(), destCIs, destLoc);
+        if(destCIBExists){
+            destCIB.setItems(destCIs);
+        }else {
+            destCIB = new CItemBucket(quantity, "Pending Delivery", totalCost, startCIB.getBucketType(), destCIs, destLoc);
+        }
         cItemBucketRepo.save(destCIB);
 
+        if(startLoc.getInventory() != null) {
+            startLoc.getInventory().add(destCIB);
+        }else{
+            List<CItemBucket> cibs = new ArrayList<>();
+            cibs.add(destCIB);
+            startLoc.setInventory(cibs);
+        }
         return destCIB;
-
     }
 }
