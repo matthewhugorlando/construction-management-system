@@ -65,9 +65,31 @@
     </div>
 </nav>
 
-<div class="container">
+<div class="container" ng-controller="listClients">
+    <div class="row text-center">
+        <h2>Client List</h2>
+    </div>
     <div class="row">
-
+        <table class="table">
+            <thead style="font-size: 1.5em;">
+            <tr>
+                <th>Client</th>
+                <th>Contact</th>
+                <th>Contact Phone</th>
+                <th>Contact Email</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="client in clientList">
+                <th scope="row">{{client.name}}</th>
+                <td>{{client.contactFirstName}} {{client.contactLastName}}</td>
+                <td>{{client.contactPhoneNumber}}</td>
+                <td>{{client.contactEmail}}</td>
+                <td><button ng-click="" type="button" class="btn btn-default">Select</button></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

@@ -1,5 +1,7 @@
 package com.ironyard.data;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 
 /**
@@ -20,7 +22,7 @@ public class CClient {
     private String contactPhoneNumber;
     private String contactEmail;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private CAddress address;
 
     public CClient() {

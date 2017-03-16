@@ -1,12 +1,11 @@
 package com.ironyard.controller;
 
 import com.ironyard.data.CClient;
+import com.ironyard.repo.CAddressRepo;
 import com.ironyard.repo.CClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by matthewhug on 3/14/17.
@@ -15,18 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class CClientController {
 
     @Autowired
+    CAddressRepo cAddressRepo;
+
+    @Autowired
     CClientRepo cClientRepo;
 
     @RequestMapping(path = "/client/new", method = RequestMethod.POST)
-    public CClient addClient(@RequestParam String name,
-                             @RequestParam String contactFirstName,
-                             @RequestParam String contactLastName,
-                             @RequestParam String contactPhoneNumber,
-                             @RequestParam String contactEmail){
-
-        CClient cc = new CClient(name, contactFirstName, contactLastName, contactPhoneNumber, contactEmail);
+    @Transactional
+    public CClient addClient(@RequestBody CClient cc){
+        System.out.println("New Client Call");
         cClientRepo.save(cc);
-
         return cc;
     }
 
