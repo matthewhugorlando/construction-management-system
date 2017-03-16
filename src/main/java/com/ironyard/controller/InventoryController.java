@@ -4,15 +4,13 @@ import com.ironyard.data.CItem;
 import com.ironyard.data.CItemBucket;
 import com.ironyard.data.CItemType;
 import com.ironyard.data.InvHolder;
+import com.ironyard.dto.CItemBucketDTO;
 import com.ironyard.repo.CItemBucketRepo;
 import com.ironyard.repo.CItemRepo;
 import com.ironyard.repo.CItemTypeRepo;
 import com.ironyard.repo.InvHolderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +34,14 @@ public class InventoryController {
     @Autowired
     InvHolderRepo invHolderRepo;
 
-    @RequestMapping(path = "/itembucket/select", method = RequestMethod.GET)
+    @RequestMapping(path = "/select", method = RequestMethod.GET)
     public CItemBucket findBucket(@RequestParam long id){
         return cItemBucketRepo.findOne(id);
+    }
+
+    @RequestMapping(path = "/list", method = RequestMethod.GET)
+    public Iterable<CItemBucket> listBuckets(){
+        return cItemBucketRepo.findAll();
     }
 
     @RequestMapping(path = "/itemtype/new", method = RequestMethod.POST)
@@ -58,26 +61,26 @@ public class InventoryController {
     }
 
     @RequestMapping(path = "/item/new", method = RequestMethod.POST)
-    public CItemBucket addItems(@RequestParam Integer quantity,
-                               @RequestParam String status,
-                               @RequestParam String type,
-                               @RequestParam String loc){
+    public CItemBucket addItems(@RequestBody CItemBucketDTO dto){
 
         List<CItem> cis;
 
-        CItemType cit = cItemTypeRepo.findByName(type);
-        InvHolder location = invHolderRepo.findByName(loc);
-        CItemBucket cib = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId(type, location.getId(), cit.getId());
+        long tId = Long.parseLong(dto.getTypeId());
+        long lId = Long.parseLong(dto.getLocId());
+
+        CItemType cit = cItemTypeRepo.findOne(tId);
+        InvHolder location = invHolderRepo.findOne(lId);
+        CItemBucket cib = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId(cit.getName(), lId, tId);
 
         if(cib != null){
             cis = cib.getItems();
         }else{
             cis = new ArrayList<>();
-            cib = new CItemBucket(quantity, status, cit, location);
+            cib = new CItemBucket(dto.getQuantity(), dto.getStatus(), cit, location);
         }
 
-        for(int i=0; i<quantity; i++){
-            CItem ci = new CItem(status, cit);
+        for(int i=0; i<dto.getQuantity(); i++){
+            CItem ci = new CItem(dto.getStatus(), cit);
             cItemRepo.save(ci);
             cis.add(ci);
         }
@@ -100,6 +103,50 @@ public class InventoryController {
 
         return cib;
     }
+
+//    @RequestMapping(path = "/item/new", method = RequestMethod.POST)
+//    public CItemBucket addItems(@RequestParam Integer quantity,
+//                               @RequestParam String status,
+//                               @RequestParam String type,
+//                               @RequestParam String loc){
+//
+//        List<CItem> cis;
+//
+//        CItemType cit = cItemTypeRepo.findByName(type);
+//        InvHolder location = invHolderRepo.findByName(loc);
+//        CItemBucket cib = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId(type, location.getId(), cit.getId());
+//
+//        if(cib != null){
+//            cis = cib.getItems();
+//        }else{
+//            cis = new ArrayList<>();
+//            cib = new CItemBucket(quantity, status, cit, location);
+//        }
+//
+//        for(int i=0; i<quantity; i++){
+//            CItem ci = new CItem(status, cit);
+//            cItemRepo.save(ci);
+//            cis.add(ci);
+//        }
+//
+//        Double totalCost = cis.size() * cit.getCostPerUnit();
+//
+//        cib.setTotalCost(totalCost);
+//        cib.setItems(cis);
+//        cItemBucketRepo.save(cib);
+//
+//        if(location.getInventory() != null) {
+//            location.getInventory().add(cib);
+//        }else{
+//            List<CItemBucket> cibs = new ArrayList<>();
+//            cibs.add(cib);
+//            location.setInventory(cibs);
+//        }
+//
+//        invHolderRepo.save(location);
+//
+//        return cib;
+//    }
 
     @RequestMapping(path = "/item/list", method = RequestMethod.GET)
     public Iterable<CItem> listItems(){

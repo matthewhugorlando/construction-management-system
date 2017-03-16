@@ -1,9 +1,6 @@
 package com.ironyard.data;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,6 +10,9 @@ import java.util.List;
  */
 @Entity
 @Table(name = "CItemBucket")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class CItemBucket {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "citembucket_sequence")
@@ -29,7 +29,7 @@ public class CItemBucket {
     private List<CItem> items;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonIdentityReference(alwaysAsId=true)
     private InvHolder location;
 
     public CItemBucket() {

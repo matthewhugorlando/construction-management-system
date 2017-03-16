@@ -65,9 +65,31 @@
     </div>
 </nav>
 
-<div class="container">
+<div class="container" ng-controller="listTypes">
+    <div class="row text-center">
+        <h2>Item Types</h2>
+    </div>
     <div class="row">
-
+        <table class="table">
+            <thead style="font-size: 1.5em;">
+            <tr>
+                <th>Name</th>
+                <th>Unit of Measurement</th>
+                <th>Cost Per Unit</th>
+                <th>Active</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="t in itemTypes">
+                <th scope="row">{{t.name}}</th>
+                <td>{{t.unitOfMeasurement}}</td>
+                <td>{{t.costPerUnit}}</td>
+                <td>{{t.active}}</td>
+                <td><a href="item.html"><button ng-click="selectType(t.id)" type="button" class="btn btn-default">Select</button></a></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

@@ -1,7 +1,6 @@
 package com.ironyard.data;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
@@ -13,6 +12,9 @@ import java.util.List;
 @Entity
 @Table(name = "InvHolder")
 @Inheritance(strategy=InheritanceType.JOINED)
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class InvHolder {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invholder_sequence")
@@ -25,7 +27,7 @@ public class InvHolder {
     private CAddress location;
 
     @OneToMany
-    @JsonManagedReference
+    @JsonIdentityReference(alwaysAsId=true)
     private List<CItemBucket> inventory;
 
     public long getId() {

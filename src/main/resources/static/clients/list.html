@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-    <title>Bootstrap Case</title>
+    <title>CMS - Client List</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -86,7 +86,7 @@
                 <td>{{client.contactFirstName}} {{client.contactLastName}}</td>
                 <td>{{client.contactPhoneNumber}}</td>
                 <td>{{client.contactEmail}}</td>
-                <td><button ng-click="" type="button" class="btn btn-default">Select</button></td>
+                <td><a href="client.html"><button ng-click="selectClient(client.id)" type="button" class="btn btn-default">Select</button></a></td>
             </tr>
             </tbody>
         </table>

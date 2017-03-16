@@ -65,9 +65,32 @@
     </div>
 </nav>
 
-<div class="container">
-    <div class="row">
 
+<div class="container" ng-controller="listItems">
+    <div class="row text-center">
+        <h2>Item List</h2>
+    </div>
+    <div class="row">
+        <table class="table">
+            <thead style="font-size: 1.5em;">
+            <tr>
+                <th>Item Type</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Quantity</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="itemB in itemList">
+                <th scope="row">{{itemB.bucketType.name}}</th>
+                <td>{{jn[itemB.location]}}</td>
+                <td>{{itemB.status}}</td>
+                <td>{{itemB.quantity}}</td>
+                <td><a href="item.html"><button ng-click="selectItem(itemB.id)" type="button" class="btn btn-default">Select</button></a></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

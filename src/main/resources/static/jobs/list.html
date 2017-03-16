@@ -65,9 +65,33 @@
     </div>
 </nav>
 
-<div class="container">
+<div class="container" ng-controller="listJobs">
+    <div class="row text-center">
+        <h2>Job List</h2>
+    </div>
     <div class="row">
-
+        <table class="table">
+            <thead style="font-size: 1.5em;">
+            <tr>
+                <th>Name</th>
+                <th>Client</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="job in jobList">
+                <th scope="row">{{job.name}}</th>
+                <td>{{job.client.name}}</td>
+                <td>{{job.startDate}}</td>
+                <td>{{job.endDate}}</td>
+                <td>{{job.status}}</td>
+                <td><a href="job.html"><button ng-click="selectJob(job.id)" type="button" class="btn btn-default">Select</button></a></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
