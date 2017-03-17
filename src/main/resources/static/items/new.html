@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-    <title>Bootstrap Case</title>
+    <title>CMS - Item New</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -69,16 +69,16 @@
     <h2>New Item</h2>
     <form>
         <div class="form-group col-lg-6">
-            <label for="type">Type:</label>
+            <label for="type">Type</label>
             <select ng-model="type" class="form-control" id="type" name="type">
                 <option disabled selected value>Select a Type</option>
                 <option ng-repeat="cit in cits" value="{{cit.id}}">{{cit.name}}</option>
             </select>
         </div>
         <div class="form-group col-lg-6">
-            <label for="loc">Type:</label>
+            <label for="loc">Location</label>
             <select ng-model="jLoc" class="form-control" id="loc" name="loc">
-                <option disabled selected value>Select a Job</option>
+                <option disabled selected value>Select a Location</option>
                 <option ng-repeat="cj in cjs" value="{{cj.id}}">{{cj.name}}</option>
             </select>
         </div>
@@ -87,7 +87,7 @@
             <input ng-model="qty" type="number" class="form-control" id="qty" name="qty">
         </div>
         <div class="form-group col-lg-6">
-            <label for="status">Type:</label>
+            <label for="status">Status</label>
             <select ng-model="status" class="form-control" id="status" name="status">
                 <option disabled selected value>Select a Status</option>
                 <option>Pending Delivery</option>

@@ -19,7 +19,7 @@ angular.module("app", [])
     // Clients Controllers
     // ==================
 
-    .controller('newclient', function($scope, $http) {
+    .controller('newClient', function($scope, $http) {
         $(document).ready(function(){
             console.log("New Client Controller checking in!");
         });
@@ -95,6 +95,101 @@ angular.module("app", [])
     // ==================
     // Jobs Controllers
     // ==================
+
+    .controller('newJob', function($scope, $http) {
+        $(document).ready(function(){
+            $scope.items = [];
+            $scope.st = false;
+            var date_input=$('input[name="date"]'); //our date input has the name "date"
+            var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+            var options={
+                format: 'mm/dd/yyyy',
+                container: container,
+                todayHighlight: true,
+                autoclose: true
+            };
+            date_input.datepicker(options);
+
+            var res1 = $http.get("/client/list");
+            res1.success(function(data, status, headers, config) {
+                $scope.clients = data;
+            });
+
+            var res2 = $http.get("/inventory/itemtype/list");
+            res2.success(function(data, status, headers, config) {
+                $scope.cits = data;
+            });
+
+        });
+
+        $scope.addItem = function(){
+            $scope.st = true;
+            var exists = false;
+            var index = 0;
+            var itemToAdd = {
+                type : $scope.itType,
+                qty : $scope.itQty,
+                status : $scope.itStatus
+            };
+            console.log("Add: " + itemToAdd.type);
+            for(z=0;z<$scope.items.length;z++){
+                console.log(z);
+
+                if($scope.items[z].type === itemToAdd.type && $scope.items[z].status === itemToAdd.status){
+                    exists = true;
+                    index = z;
+                }
+            }
+
+            if(exists){
+                $scope.items[index].qty = $scope.items[index].qty + itemToAdd.qty;
+            }else {
+                $scope.items.push(itemToAdd);
+                $scope.items[$scope.items.length - 1].index = $scope.items.length - 1;
+            }
+
+            $scope.itType = '';
+            $scope.itQty = '';
+            $scope.itStatus = '';
+        };
+
+        $scope.deleteItem = function(ditem){
+            console.log("Delete Item");
+            var spot = ditem.index;
+            $scope.items.splice(spot, 1);
+        };
+
+        $scope.submitJob = function(){
+            console.log("Job Submitted!");
+
+            var newJob = {
+                name : $scope.name,
+                clId : $scope.client,
+                startDate : $scope.startDate,
+                status : $scope.status,
+                jobPrice : $scope.jobPrice,
+                address : {
+                    street : $scope.street,
+                    city : $scope.city,
+                    state : $scope.state,
+                    zipCode : $scope.zip
+                }
+            };
+
+            var res = $http.post('/job/new', newJob);
+            res.success(function(data, status, headers, config) {
+                $scope.clientNew = data;
+            });
+            res.error(function(data, status, headers, config) {
+            });
+
+            $scope.qty = '';
+            $scope.status = '';
+            $scope.type = '';
+            $scope.jLoc = '';
+        }
+
+    })
 
     .controller('listJobs', function($scope, $http) {
         $(document).ready(function(){
@@ -203,6 +298,32 @@ angular.module("app", [])
         })
     })
 
+    .controller('newType', function($scope, $http) {
+
+        $scope.submitType = function(){
+            console.log("Type Submitted!");
+
+
+            var newType = {
+                name : $scope.name,
+                unitOfMeasurement : $scope.units,
+                costPerUnit : $scope.cost
+            };
+
+            var res = $http.post('/inventory/itemtype/new', newType);
+            res.success(function(data, status, headers, config) {
+                $scope.clientNew = data;
+            });
+            res.error(function(data, status, headers, config) {
+            });
+
+            $scope.name = '';
+            $scope.units = '';
+            $scope.cost = '';
+        }
+
+    })
+
     .controller('listTypes', function($scope, $http) {
         $(document).ready(function(){
             var res = $http.get("/inventory/itemtype/list");
@@ -215,6 +336,9 @@ angular.module("app", [])
             window.localStorage.setItem(typeId, id);
         };
     })
+
+
+
 
     .service('dataService', function($http){
         this.inProgressJobs = function(callback){

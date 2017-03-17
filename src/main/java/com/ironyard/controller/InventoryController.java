@@ -45,15 +45,22 @@ public class InventoryController {
     }
 
     @RequestMapping(path = "/itemtype/new", method = RequestMethod.POST)
-    public CItemType addItemType(@RequestParam String name,
-                                 @RequestParam Boolean active,
-                                 @RequestParam String unitOfMeasurement,
-                                 @RequestParam Double costPerUnit){
-
-        CItemType cit = new CItemType(name, active, unitOfMeasurement, costPerUnit);
+    public CItemType addItemType(@RequestBody CItemType cit){
+        cit.setActive(true);
         cItemTypeRepo.save(cit);
         return cit;
     }
+
+//    @RequestMapping(path = "/itemtype/new", method = RequestMethod.POST)
+//    public CItemType addItemType(@RequestParam String name,
+//                                 @RequestParam Boolean active,
+//                                 @RequestParam String unitOfMeasurement,
+//                                 @RequestParam Double costPerUnit){
+//
+//        CItemType cit = new CItemType(name, active, unitOfMeasurement, costPerUnit);
+//        cItemTypeRepo.save(cit);
+//        return cit;
+//    }
 
     @RequestMapping(path = "/itemtype/list", method = RequestMethod.GET)
     public Iterable<CItemType> listItemTypes(){

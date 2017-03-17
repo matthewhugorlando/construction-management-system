@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by matthewhug on 3/14/17.
  */
 @RestController
+@RequestMapping(path = "/client")
 public class CClientController {
 
     @Autowired
@@ -19,7 +20,7 @@ public class CClientController {
     @Autowired
     CClientRepo cClientRepo;
 
-    @RequestMapping(path = "/client/new", method = RequestMethod.POST)
+    @RequestMapping(path = "/new", method = RequestMethod.POST)
     @Transactional
     public CClient addClient(@RequestBody CClient cc){
         System.out.println("New Client Call");
@@ -27,12 +28,12 @@ public class CClientController {
         return cc;
     }
 
-    @RequestMapping(path = "/client/list", method = RequestMethod.GET)
+    @RequestMapping(path = "/list", method = RequestMethod.GET)
     public Iterable<CClient> listClients(){
         return cClientRepo.findAll();
     }
 
-    @RequestMapping(path = "/client/select", method = RequestMethod.GET)
+    @RequestMapping(path = "/select", method = RequestMethod.GET)
     public CClient findClient(@RequestParam Long id){
         return cClientRepo.findOne(id);
     }

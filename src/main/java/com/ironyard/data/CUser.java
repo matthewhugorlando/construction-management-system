@@ -1,5 +1,7 @@
 package com.ironyard.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class CUser {
     private String lastName;
     @Column(unique=true)
     private String username;
+    @JsonIgnore
     private String password;
     private String email;
     private String phoneNumber;

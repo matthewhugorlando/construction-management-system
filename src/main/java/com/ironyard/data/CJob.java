@@ -17,8 +17,9 @@ public class CJob extends InvHolder{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cjob_sequence")
     @SequenceGenerator(name="cjob_sequence", sequenceName = "cjob_sequence")
     private long id;
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="MM-dd-yyyy")
     private Date startDate;
+    @JsonFormat(pattern="MM-dd-yyyy")
     private Date endDate;
     private String status;
     private double jobPrice;
