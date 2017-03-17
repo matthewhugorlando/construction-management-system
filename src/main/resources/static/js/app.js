@@ -120,6 +120,11 @@ angular.module("app", [])
                 $scope.cits = data;
             });
 
+            var res3 = $http.get("/invholder/list");
+            res3.success(function(data, status, headers, config) {
+                $scope.ihs = data;
+            });
+
         });
 
         $scope.addItem = function(){
@@ -129,13 +134,16 @@ angular.module("app", [])
             var itemToAdd = {
                 type : $scope.itType,
                 qty : $scope.itQty,
-                status : $scope.itStatus
+                status : $scope.itStatus,
+                from : $scope.itFrom
             };
             console.log("Add: " + itemToAdd.type);
             for(z=0;z<$scope.items.length;z++){
                 console.log(z);
 
-                if($scope.items[z].type === itemToAdd.type && $scope.items[z].status === itemToAdd.status){
+                if($scope.items[z].type === itemToAdd.type &&
+                    $scope.items[z].status === itemToAdd.status &&
+                    $scope.items[z].from === itemToAdd.from){
                     exists = true;
                     index = z;
                 }
@@ -151,6 +159,7 @@ angular.module("app", [])
             $scope.itType = '';
             $scope.itQty = '';
             $scope.itStatus = '';
+            $scope.itFrom = 'Ordered'
         };
 
         $scope.deleteItem = function(ditem){
@@ -173,20 +182,28 @@ angular.module("app", [])
                     city : $scope.city,
                     state : $scope.state,
                     zipCode : $scope.zip
-                }
+                },
+                inventory : $scope.items
             };
 
             var res = $http.post('/job/new', newJob);
             res.success(function(data, status, headers, config) {
-                $scope.clientNew = data;
+                $scope.jobNew = data;
             });
             res.error(function(data, status, headers, config) {
             });
 
-            $scope.qty = '';
+            $scope.name = '';
+            $scope.client = '';
+            $scope.startDate = '';
             $scope.status = '';
-            $scope.type = '';
-            $scope.jLoc = '';
+            $scope.jobPrice = '';
+            $scope.street = '';
+            $scope.city = '';
+            $scope.state = '';
+            $scope.zip = '';
+            $scope.items = [];
+            $scope.st = false;
         }
 
     })

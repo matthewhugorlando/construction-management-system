@@ -86,7 +86,7 @@
         </div>
         <div class="form-group col-lg-4"> <!-- Date input -->
             <label class="control-label" for="date">Start Date</label>
-            <input class="form-control" id="date" name="date" placeholder="MM/DD/YYY" type="text"/>
+            <input class="form-control" ng-model="startDate" id="date" name="date" placeholder="MM/DD/YYY" type="text"/>
         </div>
         <div class="form-group col-lg-4 col-lg-offset-2">
             <label for="status">Status</label>
@@ -183,16 +183,22 @@
             <div class="col-lg-12">
                 <h3>   Starting Inventory</h3>
             </div>
-            <div class="form-group col-lg-3">
-                <select ng-model="itType" class="form-control" id="type" name="type">
+            <div class="form-group col-lg-2">
+                <select ng-model="itType" class="form-control" id="itType" name="type">
                     <option disabled selected value>Type</option>
                     <option ng-repeat="cit in cits">{{cit.name}}</option>
                 </select>
             </div>
-            <div class="form-group col-lg-3">
+            <div class="form-group col-lg-2">
                 <input ng-model="itQty" type="number" class="form-control" id="itQty" placeholder="Quantity">
             </div>
-            <div class="form-group col-lg-3">
+            <div class="form-group col-lg-2">
+                <select ng-model="itFrom" class="form-control" id="itFrom">
+                    <option selected>Ordered</option>
+                    <option ng-repeat="ih in ihs">{{ih.name}}</option>
+                </select>
+            </div>
+            <div class="form-group col-lg-2">
                 <select ng-model="itStatus" class="form-control" id="itStatus">
                     <option disabled selected value>Status</option>
                     <option>Pending Delivery</option>
@@ -200,21 +206,24 @@
                     <option>Used</option>
                 </select>
             </div>
-            <div class="form-group col-lg-3">
+            <div class="form-group col-lg-4">
                 <button ng-click="addItem()" type="button" class="btn btn-success">Add</button>
             </div>
             <div class="col-lg-12" ng-if="st">
                 <div ng-repeat="item in items">
-                    <div class="form-group col-lg-3">
+                    <div class="form-group col-lg-2">
                         {{item.type}}
                     </div>
-                    <div class="form-group col-lg-3">
+                    <div class="form-group col-lg-2">
                         {{item.qty}}
                     </div>
-                    <div class="form-group col-lg-3">
+                    <div class="form-group col-lg-2">
+                        {{item.from}}
+                    </div>
+                    <div class="form-group col-lg-2">
                         {{item.status}}
                     </div>
-                    <div class="form-group col-lg-3">
+                    <div class="form-group col-lg-4">
                         <span> </span><button ng-click="deleteItem(item.index)" type="button" class="btn btn-danger">Del</button>
                     </div>
                 </div>

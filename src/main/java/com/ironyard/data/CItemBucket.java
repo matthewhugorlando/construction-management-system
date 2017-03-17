@@ -42,6 +42,14 @@ public class CItemBucket {
         this.location = location;
     }
 
+    public CItemBucket(int quantity, String status, Double totalCost, CItemType bucketType, InvHolder location) {
+        this.quantity = quantity;
+        this.status = status;
+        this.totalCost = totalCost;
+        this.bucketType = bucketType;
+        this.location = location;
+    }
+
     public CItemBucket(int quantity, String status, Double totalCost, CItemType bucketType, List<CItem> items, InvHolder location) {
         this.quantity = quantity;
         this.status = status;

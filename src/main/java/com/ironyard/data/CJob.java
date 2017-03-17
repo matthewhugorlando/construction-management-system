@@ -57,6 +57,15 @@ public class CJob extends InvHolder{
         this.client = client;
     }
 
+    public CJob(String name, Date startDate, String status, double jobPrice, CClient client, CAddress address) {
+        this.setName(name);
+        this.startDate = startDate;
+        this.status = status;
+        this.jobPrice = jobPrice;
+        this.client = client;
+        this.setLocation(address);
+    }
+
     public CJob(String name, Date startDate, String status, double jobPrice, List<CUser> workedOnBy, CClient client) {
         this.setName(name);
         this.startDate = startDate;

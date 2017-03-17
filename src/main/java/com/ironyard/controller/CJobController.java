@@ -1,21 +1,17 @@
 package com.ironyard.controller;
 
-import com.ironyard.data.CClient;
-import com.ironyard.data.CJob;
-import com.ironyard.data.CTask;
-import com.ironyard.data.CUser;
-import com.ironyard.repo.CClientRepo;
-import com.ironyard.repo.CJobRepo;
-import com.ironyard.repo.CTaskRepo;
-import com.ironyard.repo.CUserRepo;
+import com.ironyard.data.*;
+import com.ironyard.dto.CJobDTO;
+import com.ironyard.dto.InventoryDTO;
+import com.ironyard.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,6 +29,15 @@ public class CJobController {
     CClientRepo cClientRepo;
 
     @Autowired
+    CItemBucketRepo cItemBucketRepo;
+
+    @Autowired
+    CItemRepo cItemRepo;
+
+    @Autowired
+    CItemTypeRepo cItemTypeRepo;
+
+    @Autowired
     CJobRepo cJobRepo;
 
     @Autowired
@@ -46,19 +51,53 @@ public class CJobController {
         return cJobRepo.findOne(id);
     }
 
+//    @RequestMapping(path = "/new", method = RequestMethod.POST)
+//    public CJob addJob(@RequestParam String name,
+//                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate localStartDate,
+//                       @RequestParam String status,
+//                       @RequestParam Double jobPrice,
+//                       @RequestParam String clientName){
+//
+//        Date startDate = java.sql.Date.valueOf(localStartDate);
+//
+//        CClient cc = cClientRepo.findByName(clientName);
+//
+//        CJob cj = new CJob(name, startDate, status, jobPrice, cc);
+//        cJobRepo.save(cj);
+//        return cj;
+//    }
+
     @RequestMapping(path = "/new", method = RequestMethod.POST)
-    public CJob addJob(@RequestParam String name,
-                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate localStartDate,
-                       @RequestParam String status,
-                       @RequestParam Double jobPrice,
-                       @RequestParam String clientName){
+    public CJob addJob(@RequestBody CJobDTO cjdto){
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        Date startDate = null;
+        try {
+            startDate = df.parse(cjdto.getStartDate());
+            String newDateString = df.format(startDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        CClient cc = cClientRepo.findOne(cjdto.getClId());
+        CJob cj = new CJob(cjdto.getName(), startDate, cjdto.getStatus(), cjdto.getJobPrice(), cc, cjdto.getAddress());
 
-        Date startDate = java.sql.Date.valueOf(localStartDate);
+        List<InventoryDTO> dtoI = cjdto.getInventory();
+        List<CItemBucket> cibs = new ArrayList<>();
+        for(int i=0; i<dtoI.size(); i++){
+            CItemType cit = cItemTypeRepo.findByName(dtoI.get(i).getType());
+            double totalCost = dtoI.get(i).getQty() * cit.getCostPerUnit();
+            CItemBucket cib = new CItemBucket(dtoI.get(i).getQty(), dtoI.get(i).getStatus(), totalCost, cit, cj);
+            List<CItem> cis = new ArrayList<>();
+            for(int j=0;j<dtoI.get(i).getQty();j++){
+                CItem ci = new CItem(dtoI.get(i).getStatus(), cit);
+//                cItemRepo.save(ci);
+                cis.add(ci);
+            }
+            cib.setItems(cis);
+            cibs.add(cib);
+        }
 
-        CClient cc = cClientRepo.findByName(clientName);
+        cj.setInventory(cibs);
 
-        CJob cj = new CJob(name, startDate, status, jobPrice, cc);
-        cJobRepo.save(cj);
         return cj;
     }
 
