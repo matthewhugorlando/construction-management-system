@@ -184,22 +184,26 @@
                 <h3>   Starting Inventory</h3>
             </div>
             <div class="form-group col-lg-2">
-                <select ng-model="itType" class="form-control" id="itType" name="type">
+                <select ng-model="itType" ng-change="findInv()" class="form-control" id="itType" name="type">
                     <option disabled selected value>Type</option>
                     <option ng-repeat="cit in cits">{{cit.name}}</option>
                 </select>
             </div>
             <div class="form-group col-lg-2">
-                <input ng-model="itQty" type="number" class="form-control" id="itQty" placeholder="Quantity">
-            </div>
-            <div class="form-group col-lg-2">
-                <select ng-model="itFrom" class="form-control" id="itFrom">
+                <select ng-model="itFrom" ng-change="findQty()" class="form-control" id="itFrom" disabled="true">
+                    <option disabled selected value>From</option>
                     <option selected>Ordered</option>
-                    <option ng-repeat="ih in ihs">{{ih.name}}</option>
+                    <option ng-repeat="ih in ihswt">{{ih.name}}</option>
                 </select>
             </div>
             <div class="form-group col-lg-2">
-                <select ng-model="itStatus" class="form-control" id="itStatus">
+                <select ng-model="itQty" ng-change="enableStatus()" class="form-control" id="itQty" name="type" disabled="true">
+                    <option disabled selected value>Quantity</option>
+                    <option ng-repeat="q in qs">{{q}}</option>
+                </select>
+            </div>
+            <div class="form-group col-lg-2">
+                <select ng-model="itStatus" ng-change="enableAddBtn()" class="form-control" id="itStatus" disabled="true">
                     <option disabled selected value>Status</option>
                     <option>Pending Delivery</option>
                     <option>On Site</option>
@@ -207,15 +211,18 @@
                 </select>
             </div>
             <div class="form-group col-lg-4">
-                <button ng-click="addItem()" type="button" class="btn btn-success">Add</button>
+                <button ng-click="addItem()" type="button" class="btn btn-success" id="itAddBtn" disabled="true">Add</button>
             </div>
             <div class="col-lg-12" ng-if="st">
                 <div ng-repeat="item in items">
                     <div class="form-group col-lg-2">
                         {{item.type}}
                     </div>
-                    <div class="form-group col-lg-2">
-                        {{item.qty}}
+                    <div class="form-group col-lg-2 text-center">
+                        <button ng-click="decQty(item.index)" type="button text-left" class="btn btn-primary">-</button>
+                        {{item.qty}} {{item.uOfM}}<span ng-if="item.qty > 1">s</span>
+                        <button ng-click="incQty(item.index)" type="button text-right" class="btn btn-primary">+</button>
+
                     </div>
                     <div class="form-group col-lg-2">
                         {{item.from}}
@@ -227,24 +234,6 @@
                         <span> </span><button ng-click="deleteItem(item.index)" type="button" class="btn btn-danger">Del</button>
                     </div>
                 </div>
-                <!--<table class="table">-->
-                    <!--<thead>-->
-                    <!--<tr>-->
-                        <!--<th>Type</th>-->
-                        <!--<th>Quantity</th>-->
-                        <!--<th>Status</th>-->
-                        <!--<th></th>-->
-                    <!--</tr>-->
-                    <!--</thead>-->
-                    <!--<tbody>-->
-                    <!--<tr ng-repeat="item in items">-->
-                        <!--<td>{{item.type}}</td>-->
-                        <!--<td>{{item.qty}}</td>-->
-                        <!--<td>{{item.status}}</td>-->
-                        <!--<td><button ng-click="deleteItem()" type="button" class="btn btn-danger">-</button></td>-->
-                    <!--</tr>-->
-                    <!--</tbody>-->
-                <!--</table>-->
             </div>
         </div>
         <br>

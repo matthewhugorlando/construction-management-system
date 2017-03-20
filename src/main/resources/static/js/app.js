@@ -83,12 +83,32 @@ angular.module("app", [])
     .controller('indvClient', function($scope, $http){
         $(document).ready(function(){
             console.log("Client page!" + localStorage.getItem(clientId));
-            var url = "/client/select?id=" + window.localStorage.getItem(clientId);
-            var res = $http.get(url);
-            res.success(function(data, status, headers, config) {
+            $scope.tr = 0;
+
+            var url1 = "/client/select?id=" + window.localStorage.getItem(clientId);
+            var res1 = $http.get(url1);
+            res1.success(function(data, status, headers, config) {
                $scope.cl = data;
             });
-            window.localStorage.setItem('clientId', "");
+            var url2 = "/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=In Progress" ;
+            var res2 = $http.get(url2);
+            res2.success(function(data, status, headers, config) {
+                $scope.jobListIP = data;
+                var jlip = data;
+                for(i=0;i<jlip.length;i++){
+                    console.log(jlip[i].jobPrice);
+                    $scope.tr = $scope.tr + jlip[i].jobPrice;
+                }
+
+            });
+            var url3 = "/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=Completed" ;
+            var res3 = $http.get(url3);
+            res3.success(function(data, status, headers, config) {
+                $scope.jobListC = data;
+                var jlc = data;
+            });
+
+
         })
     })
 
@@ -127,15 +147,65 @@ angular.module("app", [])
 
         });
 
+        $scope.findInv = function(){
+            var url1 = "/invholder/find?type=" + $scope.itType;
+            var res1 = $http.get(url1);
+            res1.success(function(data, status, headers, config) {
+                $scope.ihswt = data;
+            });
+            document.getElementById("itFrom").disabled=false;
+        };
+
+        $scope.findQty = function(){
+            $scope.qs = [];
+            var url1 = "/inventory/find?type=" + $scope.itType + "&from=" + $scope.itFrom;
+            var res1 = $http.get(url1);
+            res1.success(function(data, status, headers, config) {
+                var cibF = data;
+                for(i=0;i<cibF.quantity;i++){
+                    $scope.qs.push(i+1);
+                }
+                $scope.uom = cibF.bucketType.unitOfMeasurement;
+                $scope.maxQty = cibF.quantity;
+            });
+
+            document.getElementById("itQty").disabled=false;
+        };
+
+        $scope.enableStatus = function (){
+            document.getElementById("itStatus").disabled=false;
+        };
+
+        $scope.enableAddBtn = function (){
+            document.getElementById("itAddBtn").disabled=false;
+        };
+
+        $scope.incQty = function(it){
+            if($scope.items[it].qty < $scope.items[it].maxQty){
+                $scope.items[it].qty += 1
+            }
+        };
+
+        $scope.decQty = function(it){
+            if($scope.items[it].qty > 1){
+                $scope.items[it].qty -= 1
+            } else if($scope.items[it].qty === 1){
+                $scope.deleteItem(it);
+            }
+        };
+
+
         $scope.addItem = function(){
             $scope.st = true;
             var exists = false;
             var index = 0;
             var itemToAdd = {
                 type : $scope.itType,
-                qty : $scope.itQty,
+                qty : parseInt($scope.itQty),
                 status : $scope.itStatus,
-                from : $scope.itFrom
+                from : $scope.itFrom,
+                maxQty : $scope.maxQty,
+                uOfM : $scope.uom
             };
             console.log("Add: " + itemToAdd.type);
             for(z=0;z<$scope.items.length;z++){
@@ -159,13 +229,23 @@ angular.module("app", [])
             $scope.itType = '';
             $scope.itQty = '';
             $scope.itStatus = '';
-            $scope.itFrom = 'Ordered'
+            $scope.itFrom = '';
+            $scope.maxQty = '';
+            $scope.qs = '';
+            $scope.ihswt = '';
+            document.getElementById("itFrom").disabled=true;
+            document.getElementById("itQty").disabled=true;
+            document.getElementById("itStatus").disabled=true;
+            document.getElementById("itAddBtn").disabled=true;
         };
 
         $scope.deleteItem = function(ditem){
             console.log("Delete Item");
-            var spot = ditem.index;
+            var spot = ditem;
             $scope.items.splice(spot, 1);
+            for(i=spot;i<$scope.items.length;i++){
+                $scope.items[i].index = i;
+            }
         };
 
         $scope.submitJob = function(){

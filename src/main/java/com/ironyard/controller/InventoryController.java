@@ -211,4 +211,12 @@ public class InventoryController {
         }
         return destCIB;
     }
+
+    @RequestMapping(path = "/find", method = RequestMethod.GET)
+    public CItemBucket findForQty(@RequestParam String type, String from){
+        InvHolder ih = invHolderRepo.findByName(from);
+        CItemType cit = cItemTypeRepo.findByName(type);
+        return cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("On Site", ih.getId(), cit.getId());
+    }
+
 }
