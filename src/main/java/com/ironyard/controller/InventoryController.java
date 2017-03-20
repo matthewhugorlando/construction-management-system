@@ -218,10 +218,7 @@ public class InventoryController {
         CItemType cit = cItemTypeRepo.findByName(type);
         CItemBucket cib = new CItemBucket();
         if(from.equals("New")){
-            Iterable<CItemBucket> cibs = cItemBucketRepo.findByBucketType(cit);
-            for(CItemBucket cibi : cibs){
-                cib = cibi;
-            }
+            cib = new CItemBucket(cit);
         }else {
             cib = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("On Site", ih.getId(), cit.getId());
         }

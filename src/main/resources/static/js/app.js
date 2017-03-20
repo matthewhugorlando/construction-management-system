@@ -7,12 +7,21 @@ angular.module("app", [])
     .controller('home', function($scope, dataService) {
 
         $(document).ready(function(){
+            $scope.jobTracker = 0;
             console.log("Give me jobs automatically!");
             dataService.inProgressJobs(function (response) {
                 console.log(response.data);
                 $scope.jobsInProgress = response.data;
             });
         })
+
+        $scope.nextJob = function (){
+            $scope.jobTracker += 1;
+        }
+
+        $scope.prevJob = function (){
+            $scope.jobTracker -= 1;
+        }
     })
 
     // ==================
@@ -162,6 +171,7 @@ angular.module("app", [])
             var res1 = $http.get(url1);
             res1.success(function(data, status, headers, config) {
                 var cibF = data;
+                $scope.cibCheck = data;
                 console.log($scope.itFrom === "New");
                 if($scope.itFrom === "New"){
                     for(j=0;j<30;j++){

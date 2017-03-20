@@ -46,6 +46,9 @@ public class CJobController {
     @Autowired
     CUserRepo cUserRepo;
 
+    @Autowired
+    InvHolderRepo invHolderRepo;
+
     @RequestMapping(path = "/select", method = RequestMethod.GET)
     public CJob selectJob(@RequestParam Long id){
         return cJobRepo.findOne(id);
@@ -68,6 +71,7 @@ public class CJobController {
 //    }
 
     @RequestMapping(path = "/new", method = RequestMethod.POST)
+    @Transactional
     public CJob addJob(@RequestBody CJobDTO cjdto){
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         Date startDate = null;
@@ -79,7 +83,7 @@ public class CJobController {
         }
         CClient cc = cClientRepo.findOne(cjdto.getClId());
         CJob cj = new CJob(cjdto.getName(), startDate, cjdto.getStatus(), cjdto.getJobPrice(), cc, cjdto.getAddress());
-
+        cJobRepo.save(cj);
         List<InventoryDTO> dtoI = cjdto.getInventory();
         List<CItemBucket> cibs = new ArrayList<>();
         for(int i=0; i<dtoI.size(); i++){
@@ -90,15 +94,50 @@ public class CJobController {
                 List<CItem> cis = new ArrayList<>();
                 for (int j = 0; j < dtoI.get(i).getQty(); j++) {
                     CItem ci = new CItem(dtoI.get(i).getStatus(), cit);
-//                cItemRepo.save(ci);
+                    cItemRepo.save(ci);
                     cis.add(ci);
                 }
                 cib.setItems(cis);
+                cItemBucketRepo.save(cib);
+                cibs.add(cib);
+            }
+            else{
+                InvHolder ih = invHolderRepo.findByName(dtoI.get(i).getFrom());
+                CItemBucket transCib = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("On Site", ih.getId(), cit.getId());
+                double totalCost = dtoI.get(i).getQty() * cit.getCostPerUnit();
+                CItemBucket cib = new CItemBucket(dtoI.get(i).getQty(), dtoI.get(i).getStatus(), totalCost, cit, cj);
+                List<CItem> cis = new ArrayList<>();
+                for(int k=0;k<dtoI.get(i).getQty();k++){
+                    CItem ci = transCib.getItems().get(transCib.getItems().size()-1);
+                    ci.setStatus(dtoI.get(i).getStatus());
+                    cItemRepo.save(ci);
+                    cis.add(ci);
+                    transCib.getItems().remove(transCib.getItems().size()-1);
+                }
+
+                if(transCib.getItems().size() == 0){
+                    InvHolder ihCibToDel = invHolderRepo.findOne(transCib.getLocation().getId());
+                    for(int l=0;l<ihCibToDel.getInventory().size();l++){
+                        if(ihCibToDel.getInventory().get(l).getId() == transCib.getId()){
+                            ihCibToDel.getInventory().remove(l);
+                            invHolderRepo.save(ihCibToDel);
+                        }
+                    }
+                    cItemBucketRepo.delete(transCib.getId());
+                } else {
+                    transCib.setQuantity(transCib.getQuantity() - dtoI.get(i).getQty());
+                    transCib.setTotalCost(transCib.getBucketType().getCostPerUnit() * transCib.getQuantity());
+                    cItemBucketRepo.save(transCib);
+                }
+
+                cib.setItems(cis);
+                cItemBucketRepo.save(cib);
                 cibs.add(cib);
             }
         }
 
         cj.setInventory(cibs);
+        cJobRepo.save(cj);
 
         return cj;
     }

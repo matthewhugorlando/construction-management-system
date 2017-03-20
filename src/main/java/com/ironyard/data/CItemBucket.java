@@ -35,6 +35,10 @@ public class CItemBucket {
     public CItemBucket() {
     }
 
+    public CItemBucket(CItemType bucketType) {
+        this.bucketType = bucketType;
+    }
+
     public CItemBucket(int quantity, String status, CItemType bucketType, InvHolder location) {
         this.quantity = quantity;
         this.status = status;
