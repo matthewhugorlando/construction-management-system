@@ -65,96 +65,96 @@
     </div>
 </nav>
 
-<div class="container" ng-controller="indvClient">
+<div class="container" ng-controller="indvJob">
     <div class="row text-center">
-        <h2>Client: {{cl.name}}</h2>
+        <h2>Job: {{job.name}}</h2>
     </div>
     <div class="row">
         <div class="col-lg-3 col-lg-offset-2">
-            <p><strong>Contact:</strong> {{cl.contactFirstName}} {{cl.contactLastName}}</p>
-            <p><strong>Contact Phone:</strong> {{cl.contactPhoneNumber}}</p>
-            <p><strong>Contact Email:</strong> {{cl.contactEmail}}</p>
+            <p><strong>Client:</strong> {{job.client.name}}</p>
+            <p><strong>Start Date:</strong> {{job.startDate}}</p>
+            <p><strong>End Date:</strong> {{job.endDate}}</p>
         </div>
         <div class="col-lg-3">
-            <p><strong>Street Address:</strong> {{cl.address.street}}</p>
-            <p><strong>City:</strong> {{cl.address.city}}</p>
-            <p><strong>State:</strong> {{cl.address.state}}</p>
-            <p><strong>Zip Code:</strong> {{cl.address.zipCode}}</p>
+            <p><strong>Street Address:</strong> {{job.location.street}}</p>
+            <p><strong>City:</strong> {{job.location.city}}</p>
+            <p><strong>State:</strong> {{job.location.state}}</p>
+            <p><strong>Zip Code:</strong> {{job.location.zipCode}}</p>
 
         </div>
         <div class="col-lg-3">
-            <p><strong>Total Revenue: ${{tr}}</strong></p>
-            <p><strong>Total Completed Jobs:</strong></p>
-            <p><strong>Total Jobs in Progress:</strong></p>
+            <p><strong>Total Revenue: ${{job.jobPrice}}</strong></p>
+            <p><strong>Total Completed Tasks:</strong></p>
+            <p><strong>Total Tasks in Progress:</strong></p>
         </div>
         <div class="col-lg-1">
 
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-8 col-lg-offset-2">
-    <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading">
-            <h3 class="panel-title">Current Jobs</h3>
-        </div>
+    <!--<div class="row">-->
+        <!--<div class="col-lg-8 col-lg-offset-2">-->
+            <!--<div class="panel panel-default">-->
+                <!--&lt;!&ndash; Default panel contents &ndash;&gt;-->
+                <!--<div class="panel-heading">-->
+                    <!--<h3 class="panel-title">Current Jobs</h3>-->
+                <!--</div>-->
 
-        <!-- Table -->
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Revenue</th>
-                <th>Cost</th>
-                <th>Start Date</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="jip in jobListIP">
-                <th scope="row">{{jip.name}}</th>
-                <td>${{jip.jobPrice}}</td>
-                <td></td>
-                <td>{{jip.startDate}}</td>
-                <td>{{jip.status}}</td>
-                <td><a href="job.html"><button ng-click="selectJob(jip.id)" type="button" class="btn btn-default">Go To Job</button></a></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading">
-            <h3 class="panel-title">Completed Jobs</h3>
-        </div>
+                <!--&lt;!&ndash; Table &ndash;&gt;-->
+                <!--<table class="table">-->
+                    <!--<thead>-->
+                    <!--<tr>-->
+                        <!--<th>Name</th>-->
+                        <!--<th>Revenue</th>-->
+                        <!--<th>Cost</th>-->
+                        <!--<th>Start Date</th>-->
+                        <!--<th>Status</th>-->
+                        <!--<th></th>-->
+                    <!--</tr>-->
+                    <!--</thead>-->
+                    <!--<tbody>-->
+                    <!--<tr ng-repeat="jip in jobListIP">-->
+                        <!--<th scope="row">{{jip.name}}</th>-->
+                        <!--<td>${{jip.jobPrice}}</td>-->
+                        <!--<td></td>-->
+                        <!--<td>{{jip.startDate}}</td>-->
+                        <!--<td>{{jip.status}}</td>-->
+                        <!--<td><a href="job.html"><button ng-click="selectJob(jip.id)" type="button" class="btn btn-default">Go To Job</button></a></td>-->
+                    <!--</tr>-->
+                    <!--</tbody>-->
+                <!--</table>-->
+            <!--</div>-->
+            <!--<div class="panel panel-default">-->
+                <!--&lt;!&ndash; Default panel contents &ndash;&gt;-->
+                <!--<div class="panel-heading">-->
+                    <!--<h3 class="panel-title">Completed Jobs</h3>-->
+                <!--</div>-->
 
-        <!-- Table -->
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Client</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="jc in jobListC">
-                <th scope="row">{{jc.name}}</th>
-                <td>{{jc.client.name}}</td>
-                <td>{{jc.startDate}}</td>
-                <td>{{jc.endDate}}</td>
-                <td>{{jc.status}}</td>
-                <td><a href="job.html"><button ng-click="selectJob(jc.id)" type="button" class="btn btn-default">Go To Job</button></a></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    </div>
-    </div>
+                <!--&lt;!&ndash; Table &ndash;&gt;-->
+                <!--<table class="table">-->
+                    <!--<thead>-->
+                    <!--<tr>-->
+                        <!--<th>Name</th>-->
+                        <!--<th>Client</th>-->
+                        <!--<th>Start Date</th>-->
+                        <!--<th>End Date</th>-->
+                        <!--<th>Status</th>-->
+                        <!--<th></th>-->
+                    <!--</tr>-->
+                    <!--</thead>-->
+                    <!--<tbody>-->
+                    <!--<tr ng-repeat="jc in jobListC">-->
+                        <!--<th scope="row">{{jc.name}}</th>-->
+                        <!--<td>{{jc.client.name}}</td>-->
+                        <!--<td>{{jc.startDate}}</td>-->
+                        <!--<td>{{jc.endDate}}</td>-->
+                        <!--<td>{{jc.status}}</td>-->
+                        <!--<td><a href="job.html"><button ng-click="selectJob(jc.id)" type="button" class="btn btn-default">Go To Job</button></a></td>-->
+                    <!--</tr>-->
+                    <!--</tbody>-->
+                <!--</table>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>

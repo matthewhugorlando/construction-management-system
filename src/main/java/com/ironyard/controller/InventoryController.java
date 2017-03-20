@@ -216,7 +216,16 @@ public class InventoryController {
     public CItemBucket findForQty(@RequestParam String type, String from){
         InvHolder ih = invHolderRepo.findByName(from);
         CItemType cit = cItemTypeRepo.findByName(type);
-        return cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("On Site", ih.getId(), cit.getId());
+        CItemBucket cib = new CItemBucket();
+        if(from.equals("New")){
+            Iterable<CItemBucket> cibs = cItemBucketRepo.findByBucketType(cit);
+            for(CItemBucket cibi : cibs){
+                cib = cibi;
+            }
+        }else {
+            cib = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("On Site", ih.getId(), cit.getId());
+        }
+        return cib;
     }
 
 }

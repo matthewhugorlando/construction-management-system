@@ -10,4 +10,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface CItemBucketRepo extends PagingAndSortingRepository<CItemBucket, Long> {
     public CItemBucket findByStatusAndLocationIdAndBucketTypeId(String status, long locationId, long bucketTypeId);
     public Iterable<CItemBucket> findByBucketTypeAndStatus(CItemType cit, String status);
+    public Iterable<CItemBucket> findByBucketType(CItemType cit);
 }

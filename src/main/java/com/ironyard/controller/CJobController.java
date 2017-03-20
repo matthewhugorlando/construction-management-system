@@ -84,16 +84,18 @@ public class CJobController {
         List<CItemBucket> cibs = new ArrayList<>();
         for(int i=0; i<dtoI.size(); i++){
             CItemType cit = cItemTypeRepo.findByName(dtoI.get(i).getType());
-            double totalCost = dtoI.get(i).getQty() * cit.getCostPerUnit();
-            CItemBucket cib = new CItemBucket(dtoI.get(i).getQty(), dtoI.get(i).getStatus(), totalCost, cit, cj);
-            List<CItem> cis = new ArrayList<>();
-            for(int j=0;j<dtoI.get(i).getQty();j++){
-                CItem ci = new CItem(dtoI.get(i).getStatus(), cit);
+            if(dtoI.get(i).getFrom().equals("New")) {
+                double totalCost = dtoI.get(i).getQty() * cit.getCostPerUnit();
+                CItemBucket cib = new CItemBucket(dtoI.get(i).getQty(), dtoI.get(i).getStatus(), totalCost, cit, cj);
+                List<CItem> cis = new ArrayList<>();
+                for (int j = 0; j < dtoI.get(i).getQty(); j++) {
+                    CItem ci = new CItem(dtoI.get(i).getStatus(), cit);
 //                cItemRepo.save(ci);
-                cis.add(ci);
+                    cis.add(ci);
+                }
+                cib.setItems(cis);
+                cibs.add(cib);
             }
-            cib.setItems(cis);
-            cibs.add(cib);
         }
 
         cj.setInventory(cibs);

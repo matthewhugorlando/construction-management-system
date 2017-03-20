@@ -98,8 +98,8 @@
             </select>
         </div>
         <div class="form-group col-lg-4">
-            <label for="price">Job Price</label>
-            <input ng-model="price" type="number" step="0.01" class="form-control" id="price" name="price">
+            <label for="jobPrice">Job Price</label>
+            <input ng-model="jobPrice" type="number" step="0.01" class="form-control" id="jobPrice" name="price">
         </div>
         </div>
         <br>
@@ -192,7 +192,7 @@
             <div class="form-group col-lg-2">
                 <select ng-model="itFrom" ng-change="findQty()" class="form-control" id="itFrom" disabled="true">
                     <option disabled selected value>From</option>
-                    <option selected>Ordered</option>
+                    <option selected>New</option>
                     <option ng-repeat="ih in ihswt">{{ih.name}}</option>
                 </select>
             </div>

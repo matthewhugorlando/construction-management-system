@@ -162,11 +162,20 @@ angular.module("app", [])
             var res1 = $http.get(url1);
             res1.success(function(data, status, headers, config) {
                 var cibF = data;
-                for(i=0;i<cibF.quantity;i++){
-                    $scope.qs.push(i+1);
+                console.log($scope.itFrom === "New");
+                if($scope.itFrom === "New"){
+                    for(j=0;j<30;j++){
+                        $scope.qs.push(j+1);
+                    }
+                    $scope.maxQty = 100000;
+                }else {
+                    for (i = 0; i < cibF.quantity; i++) {
+                        $scope.qs.push(i + 1);
+                    }
+                    $scope.maxQty = cibF.quantity;
+
                 }
                 $scope.uom = cibF.bucketType.unitOfMeasurement;
-                $scope.maxQty = cibF.quantity;
             });
 
             document.getElementById("itQty").disabled=false;
@@ -307,7 +316,7 @@ angular.module("app", [])
             var url = "/job/select?id=" + window.localStorage.getItem(jobId);
             var res = $http.get(url);
             res.success(function(data, status, headers, config) {
-                $scope.jo = data;
+                $scope.job = data;
             });
             window.localStorage.setItem(jobId, "");
         })
