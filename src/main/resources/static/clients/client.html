@@ -83,7 +83,7 @@
 
         </div>
         <div class="col-lg-3">
-            <p><strong>Total Revenue: ${{tr}}</strong></p>
+            <p><strong>Total Revenue:</strong> ${{tr}}</p>
             <p><strong>Total Completed Jobs:</strong></p>
             <p><strong>Total Jobs in Progress:</strong></p>
         </div>
@@ -118,7 +118,7 @@
                         <td></td>
                         <td>{{jip.startDate}}</td>
                         <td>{{jip.status}}</td>
-                        <td><a href="job.html"><button ng-click="selectJob(jip.id)" type="button" class="btn btn-default">Go To Job</button></a></td>
+                        <td><a href="../jobs/job.html"><button ng-click="jobFromClient(jip.id)" type="button" class="btn btn-default">Go To Job</button></a></td>
                     </tr>
                     </tbody>
                 </table>
@@ -148,7 +148,7 @@
                         <td>{{jc.startDate}}</td>
                         <td>{{jc.endDate}}</td>
                         <td>{{jc.status}}</td>
-                        <td><a href="job.html"><button ng-click="selectJob(jc.id)" type="button" class="btn btn-default">Go To Job</button></a></td>
+                        <td><a href="../jobs/job.html"><button ng-click="jobFromClient(jc.id)" type="button" class="btn btn-default">Go To Job</button></a></td>
                     </tr>
                     </tbody>
                 </table>

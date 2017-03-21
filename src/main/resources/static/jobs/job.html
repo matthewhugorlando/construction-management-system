@@ -5,6 +5,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .pagination li a {
+            color: black;
+        }
+        .pagination li a:focus,
+        .pagination li a:hover,
+        .pagination li.active a{
+            background: black;
+            border-color:black;
+            color:white;
+        }
+    </style>
 </head>
 <body>
 
@@ -74,6 +86,7 @@
             <p><strong>Client:</strong> {{job.client.name}}</p>
             <p><strong>Start Date:</strong> {{job.startDate}}</p>
             <p><strong>End Date:</strong> {{job.endDate}}</p>
+            <p><strong>Status:</strong> {{job.status}}</p>
         </div>
         <div class="col-lg-3">
             <p><strong>Street Address:</strong> {{job.location.street}}</p>
@@ -83,9 +96,9 @@
 
         </div>
         <div class="col-lg-3">
-            <p><strong>Total Revenue: ${{job.jobPrice}}</strong></p>
-            <p><strong>Total Completed Tasks:</strong></p>
-            <p><strong>Total Tasks in Progress:</strong></p>
+            <p><strong>Total Revenue:</strong> ${{job.jobPrice}}</p>
+            <p><strong>Total Cost:</strong></p>
+            <p><strong>Tasks Left:</strong></p>
         </div>
         <div class="col-lg-1">
 
@@ -155,6 +168,104 @@
             <!--</div>-->
         <!--</div>-->
     <!--</div>-->
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <button ng-click="showWForm()" type="button" class="btn btn-default">New Worker</button>
+            <button ng-click="showTForm()" type="button" class="btn btn-default">New Task</button>
+            <button ng-click="showIForm()" type="button" class="btn btn-default">New Inventory</button>
+        </div>
+    </div>
+    <br>
+    <div class="row" ng-show="iForm">
+        <div class="form-group col-lg-2 col-lg-offset-1">
+            <select ng-model="itType" ng-change="findInv()" class="form-control" id="itType" name="type">
+                <option disabled selected value>Type</option>
+                <option ng-repeat="cit in cits">{{cit.name}}</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-2">
+            <select ng-model="itFrom" ng-change="findQty()" class="form-control" id="itFrom" disabled="true">
+                <option disabled selected value>From</option>
+                <option selected>New</option>
+                <option ng-repeat="ih in ihswt">{{ih.name}}</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-2">
+            <select ng-model="itQty" ng-change="enableStatus()" class="form-control" id="itQty" name="type" disabled="true">
+                <option disabled selected value>Quantity</option>
+                <option ng-repeat="q in qs">{{q}}</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-2">
+            <select ng-model="itStatus" ng-change="enableAddBtn()" class="form-control" id="itStatus" disabled="true">
+                <option disabled selected value>Status</option>
+                <option>Pending Delivery</option>
+                <option>On Site</option>
+                <option>Used</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-3">
+            <button ng-click="addItem()" type="button" class="btn btn-success" id="itAddBtn" disabled="true">Add</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Workers</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tasks</h3>
+                </div>
+                <div class="panel-body">
+                    Test
+                </div>
+                <div class="panel-footer text-center">
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+
+        </div>
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Used Inventory</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">On Site Inventory</h3>
+                </div>
+                <div class="panel-body">
+                    Panel content
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>

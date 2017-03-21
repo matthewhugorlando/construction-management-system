@@ -22,6 +22,11 @@ angular.module("app", [])
         $scope.prevJob = function (){
             $scope.jobTracker -= 1;
         }
+
+        $scope.toJobsList = function(){
+            console.log("ToJobsList function called");
+            window.location.href = '/jobs/list.html';
+        }
     })
 
     // ==================
@@ -117,6 +122,9 @@ angular.module("app", [])
                 var jlc = data;
             });
 
+            $scope.jobFromClient = function(id){
+                window.localStorage.setItem(jobId, id);
+            };
 
         })
     })
@@ -323,13 +331,175 @@ angular.module("app", [])
     .controller('indvJob', function($scope, $http){
         $(document).ready(function(){
             console.log("Job page!" + localStorage.getItem(jobId));
+            $scope.iForm = false;
             var url = "/job/select?id=" + window.localStorage.getItem(jobId);
             var res = $http.get(url);
             res.success(function(data, status, headers, config) {
                 $scope.job = data;
             });
-            window.localStorage.setItem(jobId, "");
-        })
+            var res2 = $http.get("/inventory/itemtype/list");
+            res2.success(function(data, status, headers, config) {
+                $scope.cits = data;
+            });
+        });
+
+        $scope.showIForm = function(){
+            if($scope.wForm === true){
+                $scope.wForm = false;
+            }
+            if($scope.tForm === true){
+                $scope.tForm = false;
+            }
+            $scope.iForm = !($scope.iForm);
+
+            $scope.itType = '';
+            $scope.itQty = '';
+            $scope.itStatus = '';
+            $scope.itFrom = '';
+            $scope.maxQty = '';
+            $scope.qs = '';
+            $scope.ihswt = '';
+            document.getElementById("itFrom").disabled=true;
+            document.getElementById("itQty").disabled=true;
+            document.getElementById("itStatus").disabled=true;
+            document.getElementById("itAddBtn").disabled=true;
+        };
+
+        $scope.showTForm = function(){
+            if($scope.wForm === true){
+                $scope.wForm = false;
+            }
+            if($scope.iForm === true){
+                $scope.iForm = false;
+            }
+            $scope.tForm = !($scope.tForm);
+
+            $scope.itType = '';
+            $scope.itQty = '';
+            $scope.itStatus = '';
+            $scope.itFrom = '';
+            $scope.maxQty = '';
+            $scope.qs = '';
+            $scope.ihswt = '';
+            document.getElementById("itFrom").disabled=true;
+            document.getElementById("itQty").disabled=true;
+            document.getElementById("itStatus").disabled=true;
+            document.getElementById("itAddBtn").disabled=true;
+        };
+
+        $scope.showWForm = function(){
+            if($scope.tForm === true){
+                $scope.tForm = false;
+            }
+            if($scope.iForm === true){
+                $scope.iForm = false;
+            }
+            $scope.wForm = !($scope.wForm);
+
+            $scope.itType = '';
+            $scope.itQty = '';
+            $scope.itStatus = '';
+            $scope.itFrom = '';
+            $scope.maxQty = '';
+            $scope.qs = '';
+            $scope.ihswt = '';
+            document.getElementById("itFrom").disabled=true;
+            document.getElementById("itQty").disabled=true;
+            document.getElementById("itStatus").disabled=true;
+            document.getElementById("itAddBtn").disabled=true;
+        };
+
+        $scope.findInv = function(){
+            var url1 = "/invholder/find?type=" + $scope.itType;
+            var res1 = $http.get(url1);
+            res1.success(function(data, status, headers, config) {
+                $scope.ihswt = data;
+            });
+            var url2 = "/inventory/find?type=" + $scope.itType + "&from=" + $scope.job.name;
+            var res2 = $http.get(url2);
+            res2.success(function(data, status, headers, config) {
+                $scope.currItem = data;
+            });
+            document.getElementById("itFrom").disabled=false;
+        };
+
+        $scope.findQty = function(){
+            $scope.qs = [];
+            var url1 = "/inventory/find?type=" + $scope.itType + "&from=" + $scope.itFrom;
+            var res1 = $http.get(url1);
+            res1.success(function(data, status, headers, config) {
+                var cibF = data;
+                $scope.cibCheck = data;
+                console.log($scope.itFrom === "New");
+                if($scope.itFrom === "New"){
+                    for(j=0;j<30;j++){
+                        $scope.qs.push(j+1);
+                    }
+                    $scope.maxQty = 100000;
+                }else {
+                    for (i = 0; i < cibF.quantity; i++) {
+                        $scope.qs.push(i + 1);
+                    }
+                    $scope.maxQty = cibF.quantity;
+
+                }
+                $scope.uom = cibF.bucketType.unitOfMeasurement;
+            });
+
+            document.getElementById("itQty").disabled=false;
+        };
+
+        $scope.enableStatus = function (){
+            document.getElementById("itStatus").disabled=false;
+        };
+
+        $scope.enableAddBtn = function (){
+            document.getElementById("itAddBtn").disabled=false;
+        };
+
+        $scope.addItem = function(){
+            $scope.st = true;
+            var exists = false;
+            var index = 0;
+            var itemToAdd = {
+                type : $scope.itType,
+                qty : parseInt($scope.itQty),
+                status : $scope.itStatus,
+                from : $scope.itFrom,
+                maxQty : $scope.maxQty,
+                uOfM : $scope.uom
+            };
+            console.log("Add: " + itemToAdd.type);
+            for(z=0;z<$scope.items.length;z++){
+                console.log(z);
+
+                if($scope.items[z].type === itemToAdd.type &&
+                    $scope.items[z].status === itemToAdd.status &&
+                    $scope.items[z].from === itemToAdd.from){
+                    exists = true;
+                    index = z;
+                }
+            }
+
+            if(exists){
+                $scope.items[index].qty = $scope.items[index].qty + itemToAdd.qty;
+            }else {
+                $scope.items.push(itemToAdd);
+                $scope.items[$scope.items.length - 1].index = $scope.items.length - 1;
+            }
+
+            $scope.itType = '';
+            $scope.itQty = '';
+            $scope.itStatus = '';
+            $scope.itFrom = '';
+            $scope.maxQty = '';
+            $scope.qs = '';
+            $scope.ihswt = '';
+            document.getElementById("itFrom").disabled=true;
+            document.getElementById("itQty").disabled=true;
+            document.getElementById("itStatus").disabled=true;
+            document.getElementById("itAddBtn").disabled=true;
+        };
     })
 
     // ==================
