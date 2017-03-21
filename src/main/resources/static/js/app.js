@@ -332,6 +332,7 @@ angular.module("app", [])
         $(document).ready(function(){
             console.log("Job page!" + localStorage.getItem(jobId));
             $scope.iForm = false;
+            $scope.invFilter = "All";
             var url1 = "/job/select?id=" + window.localStorage.getItem(jobId);
             var res1 = $http.get(url1);
             res1.success(function(data, status, headers, config) {
@@ -341,7 +342,31 @@ angular.module("app", [])
             res2.success(function(data, status, headers, config) {
                 $scope.cits = data;
             });
+            var url3 = "/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
+            var res3 = $http.get(url3);
+            res3.success(function(data, status, headers, config) {
+                $scope.jobInv = data;
+                var tc = 0;
+                for(i=0;i<$scope.jobInv.length;i++){
+                    tc += $scope.jobInv[i].totalCost;
+                }
+                $scope.jobTotalCost = tc;
+                $scope.filterInventory("All");
+            });
         });
+
+        $scope.filterInventory = function(filter){
+            if(filter === "All"){
+                $scope.invToShow = $scope.jobInv;
+            }else{
+                $scope.invToShow = [];
+                for(i=0;i<$scope.jobInv.length;i++){
+                    if($scope.jobInv[i].status === filter){
+                        $scope.invToShow.push($scope.jobInv[i]);
+                    }
+                }
+            }
+        }
 
         $scope.showIForm = function(){
             if($scope.wForm === true){

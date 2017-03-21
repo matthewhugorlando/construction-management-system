@@ -97,7 +97,7 @@
         </div>
         <div class="col-lg-3">
             <p><strong>Total Revenue:</strong> ${{job.jobPrice}}</p>
-            <p><strong>Total Cost:</strong></p>
+            <p><strong>Total Cost:</strong> ${{jobTotalCost}}</p>
             <p><strong>Tasks Left:</strong></p>
         </div>
         <div class="col-lg-1">
@@ -296,7 +296,31 @@
                     <h3 class="panel-title">Used Inventory</h3>
                 </div>
                 <div class="panel-body">
-                    Panel content
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Item Type</th>
+                            <th>Status</th>
+                            <th>Quantity</th>
+                            <th>
+                                <select ng-model="invFilter" ng-change="filterInventory(invFilter)" class="form-control" id="invFilter">
+                                    <option>All</option>
+                                    <option>Pending Delivery</option>
+                                    <option>On Site</option>
+                                    <option>Used</option>
+                                </select>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                                <tr ng-repeat="i in invToShow">
+                                    <th scope="row">{{i.bucketType.name}}</th>
+                                    <td>{{i.status}}</td>
+                                    <td>{{i.quantity}}</td>
+                                    <td><a href="item.html"><button ng-click="selectItem(itemB.id)" type="button" class="btn btn-default">Select</button></a></td>
+                                </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

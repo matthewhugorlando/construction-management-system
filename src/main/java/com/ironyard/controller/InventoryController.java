@@ -225,4 +225,9 @@ public class InventoryController {
         return cib;
     }
 
+    @RequestMapping(path = "/loc/find", method = RequestMethod.GET)
+    public Iterable<CItemBucket> findByLoc(@RequestParam long locId){
+        return cItemBucketRepo.findByLocationId(locId);
+    }
+
 }

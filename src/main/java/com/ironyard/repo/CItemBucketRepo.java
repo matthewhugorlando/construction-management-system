@@ -11,5 +11,5 @@ public interface CItemBucketRepo extends PagingAndSortingRepository<CItemBucket,
     public CItemBucket findByStatusAndLocationIdAndBucketTypeId(String status, long locationId, long bucketTypeId);
     public Iterable<CItemBucket> findByBucketTypeAndStatus(CItemType cit, String status);
     public Iterable<CItemBucket> findByBucketType(CItemType cit);
-    public Iterable<CItemBucket> findByStatusAndLocationId(String status, long locationId);
+    public Iterable<CItemBucket> findByLocationId(long locationId);
 }
