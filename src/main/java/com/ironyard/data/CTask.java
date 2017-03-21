@@ -32,6 +32,14 @@ public class CTask {
     public CTask() {
     }
 
+    public CTask(String name, String body, Date postDate, boolean completed, CJob job) {
+        this.name = name;
+        this.body = body;
+        this.postDate = postDate;
+        this.completed = completed;
+        this.job = job;
+    }
+
     public CTask(String name, String body, Date postDate, boolean completed, CUser createdBy, CJob job) {
         this.name = name;
         this.body = body;

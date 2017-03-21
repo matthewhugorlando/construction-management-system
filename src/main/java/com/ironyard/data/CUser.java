@@ -1,9 +1,6 @@
 package com.ironyard.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * Created by matthewhug on 3/8/17.
@@ -19,12 +16,12 @@ public class CUser {
     private String lastName;
     @Column(unique=true)
     private String username;
-    @JsonIgnore
     private String password;
     private String email;
     private String phoneNumber;
     private String permissionLevel;
     private boolean active;
+    private String file;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private CAddress currentAddress;
@@ -143,5 +140,13 @@ public class CUser {
 
     public void setCurrentAddress(CAddress currentAddress) {
         this.currentAddress = currentAddress;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 }

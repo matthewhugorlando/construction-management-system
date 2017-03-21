@@ -2,6 +2,7 @@ package com.ironyard.controller;
 
 import com.ironyard.data.*;
 import com.ironyard.dto.CJobDTO;
+import com.ironyard.dto.CTaskDTO;
 import com.ironyard.dto.InventoryDTO;
 import com.ironyard.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,29 +163,22 @@ public class CJobController {
     }
 
     @RequestMapping(path = "/task/new", method = RequestMethod.POST)
-    public CTask newTask(@RequestParam String name,
-                         @RequestParam String body,
-                         @RequestParam Long cuId,
-                         @RequestParam Long cjId){
+    public CTask newTask(@RequestBody CTaskDTO ctDTO){
 
         Calendar c = Calendar.getInstance();
         Date now = c.getTime();
-        CJob cj = cJobRepo.findOne(cjId);
-        CUser cu = cUserRepo.findOne(cuId);
+        CJob cj = cJobRepo.findOne(ctDTO.getJobId());
+//        CUser cu = cUserRepo.findOne(cuId);
 
         List<CTask> cjcts = cj.getTasks();
         if(cjcts == null){
             cjcts = new ArrayList<>();
         }
-
-        CTask ct = new CTask(name, body, now, false, cu, cj);
+        CTask ct = new CTask(ctDTO.getName(), ctDTO.getBody(), now, false, cj);
         cTaskRepo.save(ct);
-
         cjcts.add(ct);
         cj.setTasks(cjcts);
-
         cJobRepo.save(cj);
-
         return ct;
     }
 

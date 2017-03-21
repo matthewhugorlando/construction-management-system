@@ -1,6 +1,7 @@
 package com.ironyard.controller;
 
 import com.ironyard.data.CUser;
+import com.ironyard.dto.CUserDTO;
 import com.ironyard.repo.CUserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,19 +17,13 @@ public class CUserController {
     CUserRepo cUserRepo;
 
     @RequestMapping(path = "/user/new",
-                    method = RequestMethod.POST)
-    public CUser addUser(@RequestParam String firstName,
-                         @RequestParam String lastName,
-                         @RequestParam String username,
-                         @RequestParam String password,
-                         @RequestParam String email,
-                         @RequestParam String phoneNumber,
-                         @RequestParam String permissionLevel,
-                         @RequestParam Boolean active){
-        CUser newUser = new CUser(firstName, lastName, username, password, email, phoneNumber, permissionLevel, active);
-
-        cUserRepo.save(newUser);
-        return newUser;
+                    method = RequestMethod.POST,
+                    consumes = MediaType.ALL_VALUE)
+    public CUser addUser(@RequestBody CUserDTO cuDTO){
+        System.out.println("Called addUser()");
+        CUser cu = new CUser(cuDTO.getFirstName(), cuDTO.getLastName(), cuDTO.getUsername(), cuDTO.getPassword(), cuDTO.getEmail(), cuDTO.getPhoneNumber(), cuDTO.getPermissionLevel(), true);
+        cUserRepo.save(cu);
+        return cu;
     }
 
     @RequestMapping(path = "/user/list", method = RequestMethod.GET)

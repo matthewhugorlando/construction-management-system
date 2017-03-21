@@ -208,6 +208,28 @@
             <button ng-click="addItem()" type="button" class="btn btn-success" id="itAddBtn" disabled="true">Add</button>
         </div>
     </div>
+    <div class="row" ng-show="wForm">
+        <div class="form-group col-lg-4 col-lg-offset-4">
+            <select ng-model="wUser" ng-change="findQty()" class="form-control" id="wUser">
+                <option disabled selected value>Worker</option>
+                <option ng-repeat="u in dbUsers">{{u.firstName}} {{u.lastName}}</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-2">
+            <button ng-click="addWorker()" type="button" class="btn btn-success" id="wAddBtn">Add</button>
+        </div>
+    </div>
+    <div class="row" ng-show="tForm">
+        <div class="form-group col-lg-3 col-lg-offset-1">
+            <input ng-model="tTitle" type="text" class="form-control" id="tTitle" name="tTitle" placeholder="Title">
+        </div>
+        <div class="form-group col-lg-6">
+            <input ng-model="tDesc" type="text" class="form-control" id="tDesc" name="tDesc" placeholder="Description">
+        </div>
+        <div class="form-group col-lg-2">
+            <button ng-click="addTask()" type="button" class="btn btn-success" id="tAddBtn">Add</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-4 col-lg-offset-1">
             <div class="panel panel-default">
@@ -225,7 +247,30 @@
                     <h3 class="panel-title">Tasks</h3>
                 </div>
                 <div class="panel-body">
-                    Test
+                    <div ng-repeat="task in job.tasks">
+                        <div class="col-lg-9">
+                            <div class="col-lg-12">
+                                <strong>{{task.name}}</strong>
+                            </div>
+                            <div class="=col-lg-11 col-lg-offset-1">
+                                {{task.body}}
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="col-lg-6">
+                                <a href="#" class="btn btn-success">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                </a>
+                            </div>
+                            <div class="col-lg-6">
+                                <a href="#" class="btn btn-danger">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </a>
+                            </div>
+                            <!--<button ng-click="completeTask(task.id)" type="button" class="btn btn-success" id="tCompBtn">Complete</button>-->
+                            <!--<button ng-click="deleteTask(task.id)" type="button" class="btn btn-danger" id="tDelBtn">Del</button>-->
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-footer text-center">
                     <nav aria-label="...">
@@ -242,7 +287,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-1">
 
         </div>
         <div class="col-lg-10 col-lg-offset-1">

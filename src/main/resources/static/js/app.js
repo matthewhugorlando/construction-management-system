@@ -332,9 +332,9 @@ angular.module("app", [])
         $(document).ready(function(){
             console.log("Job page!" + localStorage.getItem(jobId));
             $scope.iForm = false;
-            var url = "/job/select?id=" + window.localStorage.getItem(jobId);
-            var res = $http.get(url);
-            res.success(function(data, status, headers, config) {
+            var url1 = "/job/select?id=" + window.localStorage.getItem(jobId);
+            var res1 = $http.get(url1);
+            res1.success(function(data, status, headers, config) {
                 $scope.job = data;
             });
             var res2 = $http.get("/inventory/itemtype/list");
@@ -500,6 +500,30 @@ angular.module("app", [])
             document.getElementById("itStatus").disabled=true;
             document.getElementById("itAddBtn").disabled=true;
         };
+
+        $scope.addTask = function(){
+            var newTask = {
+                name: $scope.tTitle,
+                body: $scope.tDesc,
+                jobId: window.localStorage.getItem(jobId)
+            };
+
+            var res1 = $http.post('/job/task/new', newTask);
+            res1.success(function(data, status, headers, config) {
+                $scope.jobNew = data;
+                var url2 = "/job/select?id=" + window.localStorage.getItem(jobId);
+                var res2 = $http.get(url2);
+                res2.success(function(data, status, headers, config) {
+                    $scope.job = data;
+                });
+            });
+            res.error(function(data, status, headers, config) {
+            });
+
+            $scope.tTitle = '';
+            $scope.tDesc = '';
+            $scope.tForm = false;
+        }
     })
 
     // ==================
@@ -623,6 +647,82 @@ angular.module("app", [])
         };
     })
 
+    // ==================
+    // User Controllers
+    // ==================
+
+    .controller('newUser', function($scope, $http) {
+        $(document).ready(function(){
+            console.log("New User Controller checking in!");
+        });
+
+        $scope.readFile = function(){
+            var f = document.getElementById('file').files[0],
+                r = new FileReader();
+            r.onloadend = function(e){
+                var data = e.target.result;
+                $scope.fileSeuccess = data;
+            }
+            // $scope.fileSuccess = r.readAsArrayBuffer(f);
+            r.readAsBinaryString(f);
+        }
+
+        $scope.submitUser = function(){
+            console.log("User Submitted!");
+            $scope.readFile();
+
+            var newUser = {
+                firstName: $scope.firstName,
+                lastName: $scope.lastName,
+                username: $scope.username,
+                password: $scope.password,
+                contactEmail: $scope.cEmail,
+                phoneNumber: $scope.phoneNumber,
+                email: $scope.email,
+                currentAddress : {
+                    street : $scope.street,
+                    city : $scope.city,
+                    state : $scope.state,
+                    zipCode : $scope.zip
+                },
+                file: $scope.fileSuccess
+            };
+
+            var res = $http.post('/user/new', newUser);
+            res.success(function(data, status, headers, config) {
+                $scope.userNew = data;
+            });
+            res.error(function(data, status, headers, config) {
+            });
+
+            // $scope.name = '';
+            // $scope.fn = '';
+            // $scope.ln = '';
+            // $scope.phone = '';
+            // $scope.cEmail = '';
+            // $scope.street = '';
+            // $scope.city = '';
+            // $scope.state = '';
+            // $scope.zip = '';
+
+
+        }
+
+    })
+
+    .controller('listUsers', function($scope, $http) {
+
+        $(document).ready(function(){
+            var res = $http.get("/user/list");
+            res.success(function(data, status, headers, config) {
+                $scope.userList = data;
+            });
+        });
+
+        $scope.selectUser = function(id){
+            window.localStorage.setItem(userId, id);
+        };
+    })
 
 
 
