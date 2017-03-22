@@ -2,6 +2,7 @@ package com.ironyard.repo;
 
 import com.ironyard.data.CItemBucket;
 import com.ironyard.data.CItemType;
+import com.ironyard.data.InvHolder;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
@@ -12,4 +13,6 @@ public interface CItemBucketRepo extends PagingAndSortingRepository<CItemBucket,
     public Iterable<CItemBucket> findByBucketTypeAndStatus(CItemType cit, String status);
     public Iterable<CItemBucket> findByBucketType(CItemType cit);
     public Iterable<CItemBucket> findByLocationId(long locationId);
+    public Iterable<CItemBucket> findByLocationAndStatus(InvHolder location, String status);
+    public Iterable<CItemBucket> findByLocationAndBucketType(InvHolder location, CItemType bucketType);
 }

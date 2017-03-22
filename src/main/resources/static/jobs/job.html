@@ -197,7 +197,7 @@
             </select>
         </div>
         <div class="form-group col-lg-2">
-            <select ng-model="itStatus" ng-change="enableAddBtn()" class="form-control" id="itStatus" disabled="true">
+            <select ng-model="itStatus" ng-change="enableItAddBtn()" class="form-control" id="itStatus" disabled="true">
                 <option disabled selected value>Status</option>
                 <option>Pending Delivery</option>
                 <option>On Site</option>
@@ -207,27 +207,47 @@
         <div class="form-group col-lg-3">
             <button ng-click="addItem()" type="button" class="btn btn-success" id="itAddBtn" disabled="true">Add</button>
         </div>
+        <div class="col-lg-8 col-lg-offset-2" ng-if="currLocInv.length > 0">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Item Type</th>
+                    <th>Status</th>
+                    <th>Quantity</th>
+                    <th>Cost</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="i in currLocInv">
+                    <th scope="row">{{i.bucketType.name}}</th>
+                    <td>{{i.status}}</td>
+                    <td>{{i.quantity}}</td>
+                    <td>${{i.totalCost}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="row" ng-show="wForm">
         <div class="form-group col-lg-4 col-lg-offset-4">
-            <select ng-model="wUser" ng-change="findQty()" class="form-control" id="wUser">
+            <select ng-model="wUser" ng-change="enableWAddBtn()" class="form-control" id="wUser">
                 <option disabled selected value>Worker</option>
-                <option ng-repeat="u in dbUsers">{{u.firstName}} {{u.lastName}}</option>
+                <option ng-repeat="u in dbUsers" value="{{u.id}}">{{u.firstName}} {{u.lastName}}</option>
             </select>
         </div>
         <div class="form-group col-lg-2">
-            <button ng-click="addWorker()" type="button" class="btn btn-success" id="wAddBtn">Add</button>
+            <button ng-click="addWorker()" type="button" class="btn btn-success" id="wAddBtn" disabled="true">Add</button>
         </div>
     </div>
     <div class="row" ng-show="tForm">
         <div class="form-group col-lg-3 col-lg-offset-1">
-            <input ng-model="tTitle" type="text" class="form-control" id="tTitle" name="tTitle" placeholder="Title">
+            <input ng-change="enableTAddBtn()" ng-model="tTitle" type="text" class="form-control" id="tTitle" name="tTitle" placeholder="Title">
         </div>
         <div class="form-group col-lg-6">
-            <input ng-model="tDesc" type="text" class="form-control" id="tDesc" name="tDesc" placeholder="Description">
+            <input ng-change="enableTAddBtn()" ng-model="tDesc" type="text" class="form-control" id="tDesc" name="tDesc" placeholder="Description">
         </div>
         <div class="form-group col-lg-2">
-            <button ng-click="addTask()" type="button" class="btn btn-success" id="tAddBtn">Add</button>
+            <button ng-click="addTask()" type="button" class="btn btn-success" id="tAddBtn" disabled="true">Add</button>
         </div>
     </div>
     <div class="row">
@@ -256,9 +276,10 @@
                                 {{task.body}}
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <!-- FIX COMPLETED INDICATOR background-color: #5cb85c;-->
+                        <div class="col-lg-3" ng-show="task.completed === false">
                             <div class="col-lg-6">
-                                <a href="#" class="btn btn-success">
+                                <a ng-click="markAsComplete(task.id)" class="btn btn-success">
                                     <span class="glyphicon glyphicon-ok"></span>
                                 </a>
                             </div>
@@ -267,8 +288,9 @@
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </a>
                             </div>
-                            <!--<button ng-click="completeTask(task.id)" type="button" class="btn btn-success" id="tCompBtn">Complete</button>-->
-                            <!--<button ng-click="deleteTask(task.id)" type="button" class="btn btn-danger" id="tDelBtn">Del</button>-->
+                        </div>
+                        <div class="col-lg-3 text-center" ng-show="task.completed === true">
+                            <span style="color:#5cb85c" class="glyphicon glyphicon-ok"></span>
                         </div>
                     </div>
                 </div>
@@ -293,7 +315,7 @@
         <div class="col-lg-10 col-lg-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Used Inventory</h3>
+                    <h3 class="panel-title">Inventory</h3>
                 </div>
                 <div class="panel-body">
                     <table class="table">
@@ -302,6 +324,7 @@
                             <th>Item Type</th>
                             <th>Status</th>
                             <th>Quantity</th>
+                            <th>Cost</th>
                             <th>
                                 <select ng-model="invFilter" ng-change="filterInventory(invFilter)" class="form-control" id="invFilter">
                                     <option>All</option>
@@ -317,20 +340,11 @@
                                     <th scope="row">{{i.bucketType.name}}</th>
                                     <td>{{i.status}}</td>
                                     <td>{{i.quantity}}</td>
-                                    <td><a href="item.html"><button ng-click="selectItem(itemB.id)" type="button" class="btn btn-default">Select</button></a></td>
+                                    <td>${{i.totalCost}}</td>
+                                    <td></td>
                                 </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-10 col-lg-offset-1">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">On Site Inventory</h3>
-                </div>
-                <div class="panel-body">
-                    Panel content
                 </div>
             </div>
         </div>

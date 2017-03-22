@@ -114,13 +114,14 @@
                 <div class="panel-heading">
                     <ul class="pager">
                         <div class="col-lg-2">
-                            <li ng-show="jobTracker != 0"><a style="color:black;" ng-click="prevJob()">Prev Job</a></li>
+                            <li ng-show="jobTracker != 0"><a style="color:black;" ng-click="prevJob()">Prev job</a></li>
                         </div>
                         <div class="col-lg-8 text-center">
-                            <h3 class="" >{{job.name}} - {{job.client.name}}</h3>
+                            <h3 class="" >{{job.name}}</h3>
+                            <p>{{job.client.name}}</p>
                         </div>
                         <div class="col-lg-2">
-                            <li ng-show="jobTracker + 1 != jobsInProgress.length"><a style="color:black;" ng-click="nextJob()">Next Job</a></li>
+                            <li ng-show="jobTracker + 1 != jobsInProgress.length"><a style="color:black;" ng-click="nextJob()">Next job</a></li>
                         </div>
                     </ul>
                 </div>
@@ -131,17 +132,31 @@
                                 <h3 class="panel-title">Workers</h3>
                             </div>
                             <div class="panel-body">
-                                Panel content
+                                <p class="text-center" ng-if="jobsInProgress[jobTracker].workedOnBy.length === 0">No one is assigned to work on this job.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Tasks</h3>
+                                <h3 class="panel-title">Incomplete Tasks</h3>
                             </div>
                             <div class="panel-body">
-                                Panel content
+                                <p class="text-center" ng-if="tasksOfJIP.length === 0">There are no tasks to be completed.</p>
+                                <table class="table" ng-if="tasksOfJIP.length > 0">
+                                    <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Description</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="t in tasksOfJIP">
+                                        <th scope="row">{{t.name}}</th>
+                                        <td>{{t.body}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -151,12 +166,36 @@
                     <div class="col-lg-10 col-lg-offset-1">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Inventory to be Delivered</h3>
+                                <h3 class="panel-title">Inventory - Pending Delivery</h3>
                             </div>
                             <div class="panel-body">
-                                Panel content
+                                <p class="text-center" ng-if="invOfJIP.length === 0">There are no pending deliveries.</p>
+                                <table class="table" ng-if="invOfJIP.length > 0">
+                                    <thead>
+                                    <tr>
+                                        <th>Item Type</th>
+                                        <th>Status</th>
+                                        <th>Quantity</th>
+                                        <th>Cost</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="i in invOfJIP">
+                                        <th scope="row">{{i.bucketType.name}}</th>
+                                        <td>{{i.status}}</td>
+                                        <td>{{i.quantity}}</td>
+                                        <td>${{i.totalCost}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-lg-1">
+
+                    </div>
+                    <div class="col-lg-4 col-lg-offset-4 text-center">
+                        <a href="/jobs/job.html"><button ng-click="selectJob(jobsInProgress[jobTracker].id)" type="button" class="btn btn-default">Go to job</button></a>
                     </div>
                 </div>
             </div>

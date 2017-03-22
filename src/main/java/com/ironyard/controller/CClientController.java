@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by matthewhug on 3/14/17.
  */
 @RestController
-@RequestMapping(path = "/client")
+@RequestMapping(path = "/rest/client")
 public class CClientController {
 
     @Autowired

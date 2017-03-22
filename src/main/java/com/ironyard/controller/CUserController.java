@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.*;
  * Created by matthewhug on 3/14/17.
  */
 @RestController
+@RequestMapping(path = "/rest/user")
 public class CUserController {
 
     @Autowired
     CUserRepo cUserRepo;
 
-    @RequestMapping(path = "/user/new",
+    @RequestMapping(path = "/new",
                     method = RequestMethod.POST,
                     consumes = MediaType.ALL_VALUE)
     public CUser addUser(@RequestBody CUserDTO cuDTO){
@@ -26,12 +27,12 @@ public class CUserController {
         return cu;
     }
 
-    @RequestMapping(path = "/user/list", method = RequestMethod.GET)
+    @RequestMapping(path = "/list", method = RequestMethod.GET)
     public Iterable<CUser> listUsers(){
         return cUserRepo.findAll();
     }
 
-    @RequestMapping(path = "/user/select", method = RequestMethod.GET)
+    @RequestMapping(path = "/select", method = RequestMethod.GET)
     public CUser findUser(@RequestParam Long id){
         return cUserRepo.findOne(id);
     }

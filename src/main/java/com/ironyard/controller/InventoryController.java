@@ -19,7 +19,7 @@ import java.util.List;
  * Created by matthewhug on 3/14/17.
  */
 @RestController
-@RequestMapping(path = "/inventory")
+@RequestMapping(path = "/rest/inventory")
 public class InventoryController {
 
     @Autowired
@@ -228,6 +228,19 @@ public class InventoryController {
     @RequestMapping(path = "/loc/find", method = RequestMethod.GET)
     public Iterable<CItemBucket> findByLoc(@RequestParam long locId){
         return cItemBucketRepo.findByLocationId(locId);
+    }
+
+    @RequestMapping(path = "/status/loc/find", method = RequestMethod.GET)
+    public Iterable <CItemBucket> findByStatusAndLoc(@RequestParam long locId, @RequestParam String status){
+        InvHolder ih = invHolderRepo.findOne(locId);
+        return cItemBucketRepo.findByLocationAndStatus(ih, status);
+    }
+
+    @RequestMapping(path = "/type/loc/find", method = RequestMethod.GET)
+    public Iterable <CItemBucket> findByLocAndType(@RequestParam long locId, @RequestParam String type){
+        InvHolder ih = invHolderRepo.findOne(locId);
+        CItemType cit = cItemTypeRepo.findByName(type);
+        return cItemBucketRepo.findByLocationAndBucketType(ih, cit);
     }
 
 }

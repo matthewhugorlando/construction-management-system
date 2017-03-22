@@ -19,7 +19,7 @@ import java.util.List;
  * Created by matthewhug on 3/17/17.
  */
 @RestController
-@RequestMapping(path = "/invholder")
+@RequestMapping(path = "/rest/invholder")
 public class InvHolderController {
 
     @Autowired

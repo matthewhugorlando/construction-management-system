@@ -4,28 +4,69 @@ var itemId = 'itemId';
 
 angular.module("app", [])
 
-    .controller('home', function($scope, dataService) {
+    // ==================
+    // Index Controller
+    // ==================
+
+    .controller('home', function($scope, $http) {
 
         $(document).ready(function(){
             $scope.jobTracker = 0;
+            $scope.tasksOfJIP = [];
             console.log("Give me jobs automatically!");
-            dataService.inProgressJobs(function (response) {
-                console.log(response.data);
-                $scope.jobsInProgress = response.data;
+            var res1 = $http.get("/rest/job/list/inprogress");
+            res1.success(function(data, status, headers, config) {
+                $scope.jobsInProgress = data;
+                var url2 = "/rest/inventory/status/loc/find?locId=" + $scope.jobsInProgress[$scope.jobTracker].id + "&status=Pending Delivery";
+                var res2 = $http.get(url2);
+                res2.success(function(data, status, headers, config) {
+                    $scope.invOfJIP = data;
+                });
+                for(i=0;i<$scope.jobsInProgress[$scope.jobTracker].tasks.length;i++){
+                    if($scope.jobsInProgress[$scope.jobTracker].tasks[i].completed === false){
+                        $scope.tasksOfJIP.push($scope.jobsInProgress[$scope.jobTracker].tasks[i]);
+                    }
+                }
             });
-        })
+        });
 
         $scope.nextJob = function (){
             $scope.jobTracker += 1;
-        }
+            var url2 = "/rest/inventory/status/loc/find?locId=" + $scope.jobsInProgress[$scope.jobTracker].id + "&status=Pending Delivery";
+            var res2 = $http.get(url2);
+            res2.success(function(data, status, headers, config) {
+                $scope.invOfJIP = data;
+            });
+            $scope.tasksOfJIP = [];
+            for(i=0;i<$scope.jobsInProgress[$scope.jobTracker].tasks.length;i++){
+                if($scope.jobsInProgress[$scope.jobTracker].tasks[i].completed === false){
+                    $scope.tasksOfJIP.push($scope.jobsInProgress[$scope.jobTracker].tasks[i]);
+                }
+            }
+        };
 
         $scope.prevJob = function (){
             $scope.jobTracker -= 1;
-        }
+            var url2 = "/rest/inventory/status/loc/find?locId=" + $scope.jobsInProgress[$scope.jobTracker].id + "&status=Pending Delivery";
+            var res2 = $http.get(url2);
+            res2.success(function(data, status, headers, config) {
+                $scope.invOfJIP = data;
+            });
+            $scope.tasksOfJIP = [];
+            for(i=0;i<$scope.jobsInProgress[$scope.jobTracker].tasks.length;i++){
+                if($scope.jobsInProgress[$scope.jobTracker].tasks[i].completed === false){
+                    $scope.tasksOfJIP.push($scope.jobsInProgress[$scope.jobTracker].tasks[i]);
+                }
+            }
+        };
+
+        $scope.selectJob = function(id){
+            window.localStorage.setItem(jobId, id);
+        };
 
         $scope.toJobsList = function(){
             console.log("ToJobsList function called");
-            window.location.href = '/jobs/list.html';
+            window.location.href = '/rest/jobs/list.html';
         }
     })
 
@@ -58,7 +99,7 @@ angular.module("app", [])
                     }
             };
 
-            var res = $http.post('/client/new', newClient);
+            var res = $http.post('/rest/client/new', newClient);
             res.success(function(data, status, headers, config) {
                 $scope.clientNew = data;
             });
@@ -83,7 +124,7 @@ angular.module("app", [])
     .controller('listClients', function($scope, $http) {
 
         $(document).ready(function(){
-            var res = $http.get("/client/list");
+            var res = $http.get("/rest/client/list");
             res.success(function(data, status, headers, config) {
                 $scope.clientList = data;
             });
@@ -99,12 +140,12 @@ angular.module("app", [])
             console.log("Client page!" + localStorage.getItem(clientId));
             $scope.tr = 0;
 
-            var url1 = "/client/select?id=" + window.localStorage.getItem(clientId);
+            var url1 = "/rest/client/select?id=" + window.localStorage.getItem(clientId);
             var res1 = $http.get(url1);
             res1.success(function(data, status, headers, config) {
                $scope.cl = data;
             });
-            var url2 = "/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=In Progress" ;
+            var url2 = "/rest/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=In Progress" ;
             var res2 = $http.get(url2);
             res2.success(function(data, status, headers, config) {
                 $scope.jobListIP = data;
@@ -115,7 +156,7 @@ angular.module("app", [])
                 }
 
             });
-            var url3 = "/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=Completed" ;
+            var url3 = "/rest/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=Completed" ;
             var res3 = $http.get(url3);
             res3.success(function(data, status, headers, config) {
                 $scope.jobListC = data;
@@ -147,17 +188,17 @@ angular.module("app", [])
             };
             date_input.datepicker(options);
 
-            var res1 = $http.get("/client/list");
+            var res1 = $http.get("/rest/client/list");
             res1.success(function(data, status, headers, config) {
                 $scope.clients = data;
             });
 
-            var res2 = $http.get("/inventory/itemtype/list");
+            var res2 = $http.get("/rest/inventory/itemtype/list");
             res2.success(function(data, status, headers, config) {
                 $scope.cits = data;
             });
 
-            var res3 = $http.get("/invholder/list");
+            var res3 = $http.get("/rest/invholder/list");
             res3.success(function(data, status, headers, config) {
                 $scope.ihs = data;
             });
@@ -165,7 +206,7 @@ angular.module("app", [])
         });
 
         $scope.findInv = function(){
-            var url1 = "/invholder/find?type=" + $scope.itType;
+            var url1 = "/rest/invholder/find?type=" + $scope.itType;
             var res1 = $http.get(url1);
             res1.success(function(data, status, headers, config) {
                 $scope.ihswt = data;
@@ -175,7 +216,7 @@ angular.module("app", [])
 
         $scope.findQty = function(){
             $scope.qs = [];
-            var url1 = "/inventory/find?type=" + $scope.itType + "&from=" + $scope.itFrom;
+            var url1 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.itFrom;
             var res1 = $http.get(url1);
             res1.success(function(data, status, headers, config) {
                 var cibF = data;
@@ -293,7 +334,7 @@ angular.module("app", [])
                 inventory : $scope.items
             };
 
-            var res = $http.post('/job/new', newJob);
+            var res = $http.post('/rest/job/new', newJob);
             res.success(function(data, status, headers, config) {
                 $scope.jobNew = data;
             });
@@ -317,7 +358,7 @@ angular.module("app", [])
 
     .controller('listJobs', function($scope, $http) {
         $(document).ready(function(){
-            var res = $http.get("/job/list");
+            var res = $http.get("/rest/job/list");
             res.success(function(data, status, headers, config) {
                 $scope.jobList = data;
             });
@@ -333,16 +374,16 @@ angular.module("app", [])
             console.log("Job page!" + localStorage.getItem(jobId));
             $scope.iForm = false;
             $scope.invFilter = "All";
-            var url1 = "/job/select?id=" + window.localStorage.getItem(jobId);
+            var url1 = "/rest/job/select?id=" + window.localStorage.getItem(jobId);
             var res1 = $http.get(url1);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
             });
-            var res2 = $http.get("/inventory/itemtype/list");
+            var res2 = $http.get("/rest/inventory/itemtype/list");
             res2.success(function(data, status, headers, config) {
                 $scope.cits = data;
             });
-            var url3 = "/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
+            var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
             var res3 = $http.get(url3);
             res3.success(function(data, status, headers, config) {
                 $scope.jobInv = data;
@@ -352,6 +393,10 @@ angular.module("app", [])
                 }
                 $scope.jobTotalCost = tc;
                 $scope.filterInventory("All");
+            });
+            var res4 = $http.get("/rest/user/list");
+            res4.success(function(data, status, headers, config) {
+                $scope.dbUsers = data;
             });
         });
 
@@ -384,10 +429,16 @@ angular.module("app", [])
             $scope.maxQty = '';
             $scope.qs = '';
             $scope.ihswt = '';
+            $scope.tTitle = '';
+            $scope.tDesc = '';
+            $scope.wUser = '';
+            $scope.currLocInv = [];
             document.getElementById("itFrom").disabled=true;
             document.getElementById("itQty").disabled=true;
             document.getElementById("itStatus").disabled=true;
             document.getElementById("itAddBtn").disabled=true;
+            document.getElementById("tAddBtn").disabled = true;
+            document.getElementById("wAddBtn").disabled = true;
         };
 
         $scope.showTForm = function(){
@@ -406,6 +457,12 @@ angular.module("app", [])
             $scope.maxQty = '';
             $scope.qs = '';
             $scope.ihswt = '';
+            $scope.tTitle = '';
+            $scope.tDesc = '';
+            $scope.wUser = '';
+            $scope.currLocInv = [];
+            document.getElementById("tAddBtn").disabled = true;
+            document.getElementById("wAddBtn").disabled = true;
             document.getElementById("itFrom").disabled=true;
             document.getElementById("itQty").disabled=true;
             document.getElementById("itStatus").disabled=true;
@@ -428,6 +485,13 @@ angular.module("app", [])
             $scope.maxQty = '';
             $scope.qs = '';
             $scope.ihswt = '';
+            $scope.tTitle = '';
+            $scope.tDesc = '';
+            $scope.wUser = '';
+            $scope.tForm = false;
+            $scope.currLocInv = [];
+            document.getElementById("tAddBtn").disabled = true;
+            document.getElementById("wAddBtn").disabled = true;
             document.getElementById("itFrom").disabled=true;
             document.getElementById("itQty").disabled=true;
             document.getElementById("itStatus").disabled=true;
@@ -435,22 +499,35 @@ angular.module("app", [])
         };
 
         $scope.findInv = function(){
-            var url1 = "/invholder/find?type=" + $scope.itType;
+            var url1 = "/rest/invholder/find?type=" + $scope.itType;
             var res1 = $http.get(url1);
             res1.success(function(data, status, headers, config) {
-                $scope.ihswt = data;
+                var invhol = data;
+                for(i=0;i<invhol.length;i++){
+                    if(invhol[i].id === $scope.job.id){
+                        invhol.splice(i, 1);
+                    }
+                }
+                $scope.ihswt = invhol;
             });
-            var url2 = "/inventory/find?type=" + $scope.itType + "&from=" + $scope.job.name;
+            var url2 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.job.name;
             var res2 = $http.get(url2);
             res2.success(function(data, status, headers, config) {
                 $scope.currItem = data;
             });
+
+            var url3 = "/rest/inventory/type/loc/find?type=" + $scope.itType + "&locId=" + $scope.job.id;
+            var res3 = $http.get(url3);
+            res3.success(function(data, status, headers, config) {
+                $scope.currLocInv = data;
+            });
+
             document.getElementById("itFrom").disabled=false;
         };
 
         $scope.findQty = function(){
             $scope.qs = [];
-            var url1 = "/inventory/find?type=" + $scope.itType + "&from=" + $scope.itFrom;
+            var url1 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.itFrom;
             var res1 = $http.get(url1);
             res1.success(function(data, status, headers, config) {
                 var cibF = data;
@@ -478,7 +555,7 @@ angular.module("app", [])
             document.getElementById("itStatus").disabled=false;
         };
 
-        $scope.enableAddBtn = function (){
+        $scope.enableItAddBtn = function (){
             document.getElementById("itAddBtn").disabled=false;
         };
 
@@ -495,23 +572,8 @@ angular.module("app", [])
                 uOfM : $scope.uom
             };
             console.log("Add: " + itemToAdd.type);
-            for(z=0;z<$scope.items.length;z++){
-                console.log(z);
 
-                if($scope.items[z].type === itemToAdd.type &&
-                    $scope.items[z].status === itemToAdd.status &&
-                    $scope.items[z].from === itemToAdd.from){
-                    exists = true;
-                    index = z;
-                }
-            }
-
-            if(exists){
-                $scope.items[index].qty = $scope.items[index].qty + itemToAdd.qty;
-            }else {
-                $scope.items.push(itemToAdd);
-                $scope.items[$scope.items.length - 1].index = $scope.items.length - 1;
-            }
+            // POST ITEM CODE HERE
 
             $scope.itType = '';
             $scope.itQty = '';
@@ -520,10 +582,17 @@ angular.module("app", [])
             $scope.maxQty = '';
             $scope.qs = '';
             $scope.ihswt = '';
+            $scope.currLocInv = [];
             document.getElementById("itFrom").disabled=true;
             document.getElementById("itQty").disabled=true;
             document.getElementById("itStatus").disabled=true;
             document.getElementById("itAddBtn").disabled=true;
+        };
+
+        $scope.enableTAddBtn = function (){
+            if($scope.tTitle != '' && $scope.tDesc != '') {
+                document.getElementById("tAddBtn").disabled = false;
+            }
         };
 
         $scope.addTask = function(){
@@ -533,21 +602,44 @@ angular.module("app", [])
                 jobId: window.localStorage.getItem(jobId)
             };
 
-            var res1 = $http.post('/job/task/new', newTask);
+            var res1 = $http.post('/rest/job/task/new', newTask);
             res1.success(function(data, status, headers, config) {
                 $scope.jobNew = data;
-                var url2 = "/job/select?id=" + window.localStorage.getItem(jobId);
+                var url2 = "/rest/job/select?id=" + window.localStorage.getItem(jobId);
                 var res2 = $http.get(url2);
                 res2.success(function(data, status, headers, config) {
                     $scope.job = data;
                 });
             });
-            res.error(function(data, status, headers, config) {
+            res1.error(function(data, status, headers, config) {
             });
 
             $scope.tTitle = '';
             $scope.tDesc = '';
             $scope.tForm = false;
+        };
+
+        $scope.enableWAddBtn = function (){
+            document.getElementById("wAddBtn").disabled = false;
+        };
+
+        $scope.addWorker = function(){
+            var url1 = "/rest/job/workers/add?cuId=" + $scope.wUser + "&cjId=" + $scope.job.id;
+            var res1 = $http.get(url1);
+            res1.success(function(data, status, headers, config) {
+                $scope.wUserSuccess = data;
+            });
+            $scope.wUser = "";
+            $scope.wForm = false;
+        }
+
+        $scope.markAsComplete = function(id){
+            console.log("Marked task " + id + " as complete");
+            var url1 = "/rest/job/task/completed?ctId=" + id + "&cjId=" + $scope.job.id;
+            var res1 = $http.get(url1);
+            res1.success(function(data, status, headers, config) {
+                $scope.job = data;
+            });
         }
     })
 
@@ -557,11 +649,11 @@ angular.module("app", [])
 
     .controller('newItem', function($scope, $http) {
         $(document).ready(function(){
-            var res1 = $http.get("/job/list");
+            var res1 = $http.get("/rest/job/list");
             res1.success(function(data, status, headers, config) {
                 $scope.cjs = data;
             });
-            var res2 = $http.get("/inventory/itemtype/list");
+            var res2 = $http.get("/rest/inventory/itemtype/list");
             res2.success(function(data, status, headers, config) {
                 $scope.cits = data;
             });
@@ -596,11 +688,11 @@ angular.module("app", [])
     .controller('listItems', function($scope, $http) {
         $(document).ready(function(){
 
-            var res1 = $http.get("/inventory/list");
+            var res1 = $http.get("/rest/inventory/list");
             res1.success(function(data, status, headers, config) {
                 $scope.itemList = data;
             });
-            var res2 = $http.get("/job/list");
+            var res2 = $http.get("/rest/job/list");
             res2.success(function(data, status, headers, config) {
                 $scope.jobList = data;
                 console.log(data);
@@ -624,7 +716,7 @@ angular.module("app", [])
     .controller('indvItem', function($scope, $http){
         $(document).ready(function(){
             console.log("Item page!" + localStorage.getItem(jobId));
-            var url = "/inventory/select?id=" + window.localStorage.getItem(itemId);
+            var url = "/rest/inventory/select?id=" + window.localStorage.getItem(itemId);
             var res = $http.get(url);
             res.success(function(data, status, headers, config) {
                 $scope.it = data;
@@ -645,7 +737,7 @@ angular.module("app", [])
                 costPerUnit : $scope.cost
             };
 
-            var res = $http.post('/inventory/itemtype/new', newType);
+            var res = $http.post('/rest/inventory/itemtype/new', newType);
             res.success(function(data, status, headers, config) {
                 $scope.clientNew = data;
             });
@@ -661,7 +753,7 @@ angular.module("app", [])
 
     .controller('listTypes', function($scope, $http) {
         $(document).ready(function(){
-            var res = $http.get("/inventory/itemtype/list");
+            var res = $http.get("/rest/inventory/itemtype/list");
             res.success(function(data, status, headers, config) {
                 $scope.itemTypes = data;
             });
@@ -713,7 +805,7 @@ angular.module("app", [])
                 file: $scope.fileSuccess
             };
 
-            var res = $http.post('/user/new', newUser);
+            var res = $http.post('/rest/user/new', newUser);
             res.success(function(data, status, headers, config) {
                 $scope.userNew = data;
             });
@@ -738,7 +830,7 @@ angular.module("app", [])
     .controller('listUsers', function($scope, $http) {
 
         $(document).ready(function(){
-            var res = $http.get("/user/list");
+            var res = $http.get("/rest/user/list");
             res.success(function(data, status, headers, config) {
                 $scope.userList = data;
             });
@@ -753,16 +845,16 @@ angular.module("app", [])
 
     .service('dataService', function($http){
         this.inProgressJobs = function(callback){
-            $http.get("/job/list/inprogress")
+            $http.get("/rest/job/list/inprogress")
                 .then(callback)
         };
 
         this.listOfClients = function(){
-            $http.get("/client/list")
+            $http.get("/rest/client/list")
         };
 
         this.clientSubmit = function(){
-            $http.post("/client/new", data)
+            $http.post("/rest/client/new", data)
                 .then(successCallback, errorCallback);
         }
     });

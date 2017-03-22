@@ -23,7 +23,7 @@ import java.util.List;
  * Created by matthewhug on 3/14/17.
  */
 @RestController
-@RequestMapping(path = "/job")
+@RequestMapping(path = "/rest/job")
 public class CJobController {
 
     @Autowired
@@ -182,4 +182,16 @@ public class CJobController {
         return ct;
     }
 
+    @RequestMapping(path = "/task/completed", method = RequestMethod.GET)
+    public InvHolder markTaskCompleted(@RequestParam Long ctId, @RequestParam Long cjId){
+        CTask ct = cTaskRepo.findOne(ctId);
+        Calendar c = Calendar.getInstance();
+        Date now = c.getTime();
+
+        ct.setCompletedDate(now);
+        ct.setCompleted(true);
+        cTaskRepo.save(ct);
+
+        return invHolderRepo.findOne(cjId);
+    }
 }
