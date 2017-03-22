@@ -13,4 +13,10 @@ public class RouteController {
     public String goToJobList(){
         return "/jobs/list.html";
     }
+
+    @RequestMapping(path = "/")
+    public String goHome(){
+        System.out.println("You called goHome()");
+        return "/index.html";
+    }
 }

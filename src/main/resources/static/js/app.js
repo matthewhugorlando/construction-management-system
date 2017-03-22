@@ -2,23 +2,30 @@ var clientId = 'clientId';
 var jobId = 'jobId';
 var itemId = 'itemId';
 
+var authconfig = {
+    headers: {
+        'x-authorization-key': 'test',
+    }
+};
+
 angular.module("app", [])
+
 
     // ==================
     // Index Controller
     // ==================
 
-    .controller('home', function($scope, $http) {
+    .controller('home', function($scope, $http, $location) {
 
         $(document).ready(function(){
             $scope.jobTracker = 0;
             $scope.tasksOfJIP = [];
             console.log("Give me jobs automatically!");
-            var res1 = $http.get("/rest/job/list/inprogress");
+            var res1 = $http.get("/rest/job/list/inprogress", authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.jobsInProgress = data;
                 var url2 = "/rest/inventory/status/loc/find?locId=" + $scope.jobsInProgress[$scope.jobTracker].id + "&status=Pending Delivery";
-                var res2 = $http.get(url2);
+                var res2 = $http.get(url2, authconfig);
                 res2.success(function(data, status, headers, config) {
                     $scope.invOfJIP = data;
                 });
@@ -28,12 +35,16 @@ angular.module("app", [])
                     }
                 }
             });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
         });
+
 
         $scope.nextJob = function (){
             $scope.jobTracker += 1;
             var url2 = "/rest/inventory/status/loc/find?locId=" + $scope.jobsInProgress[$scope.jobTracker].id + "&status=Pending Delivery";
-            var res2 = $http.get(url2);
+            var res2 = $http.get(url2, authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.invOfJIP = data;
             });
@@ -48,7 +59,7 @@ angular.module("app", [])
         $scope.prevJob = function (){
             $scope.jobTracker -= 1;
             var url2 = "/rest/inventory/status/loc/find?locId=" + $scope.jobsInProgress[$scope.jobTracker].id + "&status=Pending Delivery";
-            var res2 = $http.get(url2);
+            var res2 = $http.get(url2, authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.invOfJIP = data;
             });
