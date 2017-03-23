@@ -15,7 +15,7 @@ angular.module("app", [])
     // Index Controller
     // ==================
 
-    .controller('home', function($scope, $http, $location) {
+    .controller('home', function($scope, $http) {
 
         $(document).ready(function(){
             $scope.jobTracker = 0;
@@ -422,7 +422,7 @@ angular.module("app", [])
                     }
                 }
             }
-        }
+        };
 
         $scope.showIForm = function(){
             if($scope.wForm === true){
@@ -574,7 +574,7 @@ angular.module("app", [])
             $scope.st = true;
             var exists = false;
             var index = 0;
-            var itemToAdd = {
+            var newItem = {
                 type : $scope.itType,
                 qty : parseInt($scope.itQty),
                 status : $scope.itStatus,
@@ -582,9 +582,31 @@ angular.module("app", [])
                 maxQty : $scope.maxQty,
                 uOfM : $scope.uom
             };
-            console.log("Add: " + itemToAdd.type);
+            console.log("Add: " + newItem.type);
 
-            // POST ITEM CODE HERE
+            var res1 = $http.post('/rest/job/inventory/new?cjId=' + window.localStorage.getItem(jobId), newItem, authconfig);
+            res1.success(function(data, status, headers, config) {
+                $scope.jobNew = data;
+                var url2 = "/rest/job/select?id=" + window.localStorage.getItem(jobId);
+                var res2 = $http.get(url2);
+                res2.success(function(data, status, headers, config) {
+                    $scope.job = data;
+                    var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
+                    var res3 = $http.get(url3);
+                    res3.success(function(data, status, headers, config) {
+                        $scope.jobInv = data;
+                        var tc = 0;
+                        for(i=0;i<$scope.jobInv.length;i++){
+                            tc += $scope.jobInv[i].totalCost;
+                        }
+                        $scope.jobTotalCost = tc;
+                        $scope.filterInventory($scope.invFilter);
+                    });
+                });
+            });
+            res1.error(function(data, status, headers, config) {
+                // window.location.replace("/login.html");
+            });
 
             $scope.itType = '';
             $scope.itQty = '';
@@ -647,6 +669,15 @@ angular.module("app", [])
         $scope.markAsComplete = function(id){
             console.log("Marked task " + id + " as complete");
             var url1 = "/rest/job/task/completed?ctId=" + id + "&cjId=" + $scope.job.id;
+            var res1 = $http.get(url1);
+            res1.success(function(data, status, headers, config) {
+                $scope.job = data;
+            });
+        }
+
+        $scope.deleteTask = function(id){
+            console.log("Delete Task:" + id);
+            var url1 = "/rest/job/task/delete?ctId=" + id + "&cjId=" + $scope.job.id;
             var res1 = $http.get(url1);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;

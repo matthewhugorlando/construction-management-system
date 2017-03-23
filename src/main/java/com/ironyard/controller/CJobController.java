@@ -194,4 +194,94 @@ public class CJobController {
 
         return invHolderRepo.findOne(cjId);
     }
+
+    @RequestMapping(path = "/task/delete", method = RequestMethod.GET)
+    public InvHolder deleteTask(@RequestParam Long ctId, @RequestParam Long cjId){
+        CTask ct = cTaskRepo.findOne(ctId);
+        CJob cj = cJobRepo.findOne(ct.getJob().getId());
+        List<CTask> cjTasks = cj.getTasks();
+
+        for(int i=0; i< cjTasks.size(); i++){
+            if(cjTasks.get(i).getId() == ctId){
+                cjTasks.remove(i);
+            }
+        }
+
+        cj.setTasks(cjTasks);
+        cJobRepo.save(cj);
+        cTaskRepo.delete(ctId);
+
+        return invHolderRepo.findOne(cjId);
+    }
+
+    @RequestMapping(path = "/inventory/new", method = RequestMethod.POST)
+    public InvHolder newInventory(@RequestBody InventoryDTO iDTO, @RequestParam Long cjId){
+        InvHolder ih = invHolderRepo.findOne(cjId);
+        CItemType cit = cItemTypeRepo.findByName(iDTO.getType());
+        List<CItemBucket> cibs = ih.getInventory();
+        CItemBucket cib = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId(iDTO.getStatus(), cjId, cit.getId());
+        List<CItem> cis = new ArrayList<>();
+        double totalCost;
+        boolean alreadyExists = false;
+        if(cib == null) {
+            cib = new CItemBucket(iDTO.getQty(), iDTO.getStatus(), cit, ih);
+            totalCost = iDTO.getQty() * cit.getCostPerUnit();
+            cib.setTotalCost(totalCost);
+        }else{
+            alreadyExists = true;
+            cis = cib.getItems();
+            totalCost = (iDTO.getQty() + cib.getItems().size()) * cit.getCostPerUnit();
+            cib.setTotalCost(totalCost);
+        }
+        if(iDTO.getFrom().equals("New")) {
+            for (int j = 0; j < iDTO.getQty(); j++) {
+                CItem ci = new CItem(iDTO.getStatus(), cit);
+                cItemRepo.save(ci);
+                cis.add(ci);
+            }
+            cib.setItems(cis);
+            cItemBucketRepo.save(cib);
+        }
+        else{
+            InvHolder ihFrom = invHolderRepo.findByName(iDTO.getFrom());
+            CItemBucket transCib = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("On Site", ihFrom.getId(), cit.getId());
+            for(int k=0;k<iDTO.getQty();k++){
+                CItem ci = transCib.getItems().get(transCib.getItems().size()-1);
+                ci.setStatus(iDTO.getStatus());
+                cItemRepo.save(ci);
+                cis.add(ci);
+                transCib.getItems().remove(transCib.getItems().size()-1);
+            }
+
+            if(transCib.getItems().size() == 0){
+                InvHolder ihCibToDel = invHolderRepo.findOne(transCib.getLocation().getId());
+                for(int l=0;l<ihCibToDel.getInventory().size();l++){
+                    if(ihCibToDel.getInventory().get(l).getId() == transCib.getId()){
+                        ihCibToDel.getInventory().remove(l);
+                        invHolderRepo.save(ihCibToDel);
+                    }
+                }
+                cItemBucketRepo.delete(transCib.getId());
+            } else {
+                transCib.setQuantity(transCib.getQuantity() - iDTO.getQty());
+                transCib.setTotalCost(transCib.getBucketType().getCostPerUnit() * transCib.getQuantity());
+                cItemBucketRepo.save(transCib);
+            }
+        }
+
+        if(!alreadyExists) {
+            cib.setItems(cis);
+            cib.setQuantity(cib.getItems().size());
+            cibs.add(cib);
+        }else{
+            cib.setItems(cis);
+            cib.setQuantity(cib.getItems().size());
+        }
+        cItemBucketRepo.save(cib);
+
+
+        ih.setInventory(cibs);
+        invHolderRepo.save(ih);
+        return ih;
+    }
 }

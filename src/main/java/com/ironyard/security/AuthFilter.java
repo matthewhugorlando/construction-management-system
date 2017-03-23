@@ -21,17 +21,15 @@ public class AuthFilter implements Filter{
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         HttpServletRequest req = (HttpServletRequest) servletRequest;
 
-        System.out.println("Auth Filter called");
-
         String authToken = req.getHeader("x-authorization-key");
-        System.out.println(authToken);
-        System.out.println(req.getRequestURI().endsWith("login.html"));
-        if(authToken == null && !req.getRequestURI().endsWith("login.html"))
-        {
-            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        } else{
-            filterChain.doFilter(servletRequest, servletResponse);
-        }
+//        if(authToken == null && !req.getRequestURI().endsWith("login.html"))
+//        {
+//            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//        } else{
+//            filterChain.doFilter(servletRequest, servletResponse);
+//        }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
