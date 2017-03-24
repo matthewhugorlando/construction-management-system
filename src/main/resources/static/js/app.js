@@ -12,12 +12,39 @@ angular.module("app", [])
 
 
     // ==================
+    // Login Controller
+    // ==================
+
+    .controller('login', function($scope, $http) {
+
+        $(document).ready(function(){
+            console.log("Welcome to login!");
+        });
+
+        $scope.attemptLogin = function (){
+            $scope.jobTracker += 1;
+            var url2 = "/rest/user/login?u=" + $scope.username + "&p=" + $scope.password;
+            var res2 = $http.get(url2, authconfig);
+            res2.success(function(data, status, headers, config) {
+                window.localStorage.setItem("token", data.token);
+                window.location.replace("/index.html");
+            });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+
+        };
+
+    })
+
+    // ==================
     // Index Controller
     // ==================
 
     .controller('home', function($scope, $http) {
 
         $(document).ready(function(){
+            $scope.tokenCheck = window.localStorage.getItem("token");
             $scope.jobTracker = 0;
             $scope.tasksOfJIP = [];
             console.log("Give me jobs automatically!");
@@ -828,7 +855,6 @@ angular.module("app", [])
 
         $scope.submitUser = function(){
             console.log("User Submitted!");
-            $scope.readFile();
 
             var newUser = {
                 firstName: $scope.firstName,
@@ -844,7 +870,6 @@ angular.module("app", [])
                     state : $scope.state,
                     zipCode : $scope.zip
                 },
-                file: $scope.fileSuccess
             };
 
             var res = $http.post('/rest/user/new', newUser);

@@ -3,9 +3,12 @@ package com.ironyard.controller;
 import com.ironyard.data.CUser;
 import com.ironyard.dto.CUserDTO;
 import com.ironyard.repo.CUserRepo;
+import com.ironyard.security.TokenMaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by matthewhug on 3/14/17.
@@ -37,5 +40,23 @@ public class CUserController {
         return cUserRepo.findOne(id);
     }
 
+    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    public TokenMaster attemptLogin(HttpServletResponse res,
+                                    @RequestParam String u,
+                                    @RequestParam String p){
+        TokenMaster t = new TokenMaster();
+        CUser cu = cUserRepo.findByUsernameAndPassword(u, p);
+        if(cu == null){
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+        String tok = null;
+        try {
+            tok = t.generateToken(cu);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        t.setToken(tok);
+        return t;
+    }
 
 }
