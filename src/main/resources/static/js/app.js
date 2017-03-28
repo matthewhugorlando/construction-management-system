@@ -4,7 +4,7 @@ var itemId = 'itemId';
 
 var authconfig = {
     headers: {
-        'x-authorization-key': 'test',
+        'x-authorization-key': window.localStorage.getItem("token")
     }
 };
 
@@ -75,12 +75,16 @@ angular.module("app", [])
             res2.success(function(data, status, headers, config) {
                 $scope.invOfJIP = data;
             });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
             $scope.tasksOfJIP = [];
             for(i=0;i<$scope.jobsInProgress[$scope.jobTracker].tasks.length;i++){
                 if($scope.jobsInProgress[$scope.jobTracker].tasks[i].completed === false){
                     $scope.tasksOfJIP.push($scope.jobsInProgress[$scope.jobTracker].tasks[i]);
                 }
             }
+
         };
 
         $scope.prevJob = function (){
@@ -89,6 +93,9 @@ angular.module("app", [])
             var res2 = $http.get(url2, authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.invOfJIP = data;
+            });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
             $scope.tasksOfJIP = [];
             for(i=0;i<$scope.jobsInProgress[$scope.jobTracker].tasks.length;i++){
@@ -105,6 +112,12 @@ angular.module("app", [])
         $scope.toJobsList = function(){
             console.log("ToJobsList function called");
             window.location.href = '/rest/jobs/list.html';
+        }
+
+        $scope.logout = function (){
+            console.log("logout called");
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
         }
     })
 
@@ -142,6 +155,7 @@ angular.module("app", [])
                 $scope.clientNew = data;
             });
             res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
 
             $scope.name = '';
@@ -157,6 +171,10 @@ angular.module("app", [])
 
         }
 
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        }
     })
 
     .controller('listClients', function($scope, $http) {
@@ -166,11 +184,19 @@ angular.module("app", [])
             res.success(function(data, status, headers, config) {
                 $scope.clientList = data;
             });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
         });
 
         $scope.selectClient = function(id){
             window.localStorage.setItem(clientId, id);
         };
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        }
     })
 
     .controller('indvClient', function($scope, $http){
@@ -183,6 +209,9 @@ angular.module("app", [])
             res1.success(function(data, status, headers, config) {
                $scope.cl = data;
             });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
             var url2 = "/rest/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=In Progress" ;
             var res2 = $http.get(url2);
             res2.success(function(data, status, headers, config) {
@@ -194,18 +223,29 @@ angular.module("app", [])
                 }
 
             });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
             var url3 = "/rest/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=Completed" ;
             var res3 = $http.get(url3);
             res3.success(function(data, status, headers, config) {
                 $scope.jobListC = data;
                 var jlc = data;
             });
+            res3.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
 
             $scope.jobFromClient = function(id){
                 window.localStorage.setItem(jobId, id);
             };
 
-        })
+        });
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        }
     })
 
     // ==================
@@ -230,15 +270,24 @@ angular.module("app", [])
             res1.success(function(data, status, headers, config) {
                 $scope.clients = data;
             });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
 
             var res2 = $http.get("/rest/inventory/itemtype/list");
             res2.success(function(data, status, headers, config) {
                 $scope.cits = data;
             });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
 
             var res3 = $http.get("/rest/invholder/list");
             res3.success(function(data, status, headers, config) {
                 $scope.ihs = data;
+            });
+            res3.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
 
         });
@@ -273,6 +322,9 @@ angular.module("app", [])
 
                 }
                 $scope.uom = cibF.bucketType.unitOfMeasurement;
+            });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
 
             document.getElementById("itQty").disabled=false;
@@ -377,6 +429,7 @@ angular.module("app", [])
                 $scope.jobNew = data;
             });
             res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
 
             $scope.name = '';
@@ -392,6 +445,11 @@ angular.module("app", [])
             $scope.st = false;
         }
 
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        }
+
     })
 
     .controller('listJobs', function($scope, $http) {
@@ -405,6 +463,11 @@ angular.module("app", [])
         $scope.selectJob = function(id){
             window.localStorage.setItem(jobId, id);
         };
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        }
     })
 
     .controller('indvJob', function($scope, $http){
@@ -417,9 +480,16 @@ angular.module("app", [])
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
             });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+
             var res2 = $http.get("/rest/inventory/itemtype/list");
             res2.success(function(data, status, headers, config) {
                 $scope.cits = data;
+            });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
             var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
             var res3 = $http.get(url3);
@@ -432,9 +502,15 @@ angular.module("app", [])
                 $scope.jobTotalCost = tc;
                 $scope.filterInventory("All");
             });
+            res3.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
             var res4 = $http.get("/rest/user/list");
             res4.success(function(data, status, headers, config) {
                 $scope.dbUsers = data;
+            });
+            res4.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
         });
 
@@ -548,16 +624,24 @@ angular.module("app", [])
                 }
                 $scope.ihswt = invhol;
             });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
             var url2 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.job.name;
             var res2 = $http.get(url2);
             res2.success(function(data, status, headers, config) {
                 $scope.currItem = data;
             });
-
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
             var url3 = "/rest/inventory/type/loc/find?type=" + $scope.itType + "&locId=" + $scope.job.id;
             var res3 = $http.get(url3);
             res3.success(function(data, status, headers, config) {
                 $scope.currLocInv = data;
+            });
+            res3.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
 
             document.getElementById("itFrom").disabled=false;
@@ -632,7 +716,7 @@ angular.module("app", [])
                 });
             });
             res1.error(function(data, status, headers, config) {
-                // window.location.replace("/login.html");
+                window.location.replace("/login.html");
             });
 
             $scope.itType = '';
@@ -700,7 +784,7 @@ angular.module("app", [])
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
             });
-        }
+        };
 
         $scope.deleteTask = function(id){
             console.log("Delete Task:" + id);
@@ -709,6 +793,11 @@ angular.module("app", [])
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
             });
+        };
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
         }
     })
 
@@ -722,9 +811,15 @@ angular.module("app", [])
             res1.success(function(data, status, headers, config) {
                 $scope.cjs = data;
             });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
             var res2 = $http.get("/rest/inventory/itemtype/list");
             res2.success(function(data, status, headers, config) {
                 $scope.cits = data;
+            });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
         });
 
@@ -744,12 +839,18 @@ angular.module("app", [])
                 $scope.clientNew = data;
             });
             res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
 
             $scope.qty = '';
             $scope.status = '';
             $scope.type = '';
             $scope.jLoc = '';
+        };
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
         }
 
     })
@@ -760,6 +861,9 @@ angular.module("app", [])
             var res1 = $http.get("/rest/inventory/list");
             res1.success(function(data, status, headers, config) {
                 $scope.itemList = data;
+            });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
             var res2 = $http.get("/rest/job/list");
             res2.success(function(data, status, headers, config) {
@@ -773,6 +877,9 @@ angular.module("app", [])
                 }
 
                 $scope.jn = jNames;
+            });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
 
         });
@@ -790,8 +897,16 @@ angular.module("app", [])
             res.success(function(data, status, headers, config) {
                 $scope.it = data;
             });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
             window.localStorage.setItem(itemId, "");
-        })
+        });
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        };
     })
 
     .controller('newType', function($scope, $http) {
@@ -811,13 +926,18 @@ angular.module("app", [])
                 $scope.clientNew = data;
             });
             res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
 
             $scope.name = '';
             $scope.units = '';
             $scope.cost = '';
-        }
+        };
 
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        }
     })
 
     .controller('listTypes', function($scope, $http) {
@@ -825,6 +945,9 @@ angular.module("app", [])
             var res = $http.get("/rest/inventory/itemtype/list");
             res.success(function(data, status, headers, config) {
                 $scope.itemTypes = data;
+            });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
         });
 
@@ -848,10 +971,10 @@ angular.module("app", [])
             r.onloadend = function(e){
                 var data = e.target.result;
                 $scope.fileSeuccess = data;
-            }
+            };
             // $scope.fileSuccess = r.readAsArrayBuffer(f);
             r.readAsBinaryString(f);
-        }
+        };
 
         $scope.submitUser = function(){
             console.log("User Submitted!");
@@ -877,6 +1000,7 @@ angular.module("app", [])
                 $scope.userNew = data;
             });
             res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
 
             // $scope.name = '';
@@ -890,7 +1014,12 @@ angular.module("app", [])
             // $scope.zip = '';
 
 
-        }
+        };
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        };
 
     })
 
@@ -901,10 +1030,18 @@ angular.module("app", [])
             res.success(function(data, status, headers, config) {
                 $scope.userList = data;
             });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
         });
 
         $scope.selectUser = function(id){
             window.localStorage.setItem(userId, id);
+        };
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
         };
     })
 
