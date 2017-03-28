@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-    <title>CMS - Item Types</title>
+    <title>CMS - Item Type New</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
-<body ng-controller="listTypes">
+<body ng-controller="editType">
 
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
@@ -29,7 +29,7 @@
                 <ul class="dropdown-menu">
                     <li><a href="list.html">List</a></li>
                     <li><a href="new.html">Add New</a></li>
-                    <li><a href="#">Types</a></li>
+                    <li><a href="types.html">Types</a></li>
                     <li><a href="newtype.html">New Type</a></li>
                 </ul>
             </li>
@@ -66,31 +66,26 @@
 </nav>
 
 <div class="container">
-    <div class="row text-center">
-        <h2>Item Types</h2>
-    </div>
-    <div class="row">
-        <table class="table">
-            <thead style="font-size: 1.5em;">
-            <tr>
-                <th>Name</th>
-                <th>Unit of Measurement</th>
-                <th>Cost Per Unit</th>
-                <th>Active</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="t in itemTypes">
-                <th scope="row">{{t.name}}</th>
-                <td>{{t.unitOfMeasurement}}</td>
-                <td>{{t.costPerUnit}}</td>
-                <td>{{t.active}}</td>
-                <td><a href="edittype.html"><button ng-click="selectType(t.id)" type="button" class="btn btn-default">Select</button></a></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <h2>Edit {{cit.name}} Type</h2>
+    <form>
+        <div class="form-group col-lg-4">
+            <label for="name">Name</label>
+            <input ng-model="name" type="text" class="form-control" id="name" name="name">
+        </div>
+        <div class="form-group col-lg-4">
+            <label for="units">Unit of Measurement</label>
+            <input ng-model="units" type="text" class="form-control" id="units" name="units">
+        </div>
+        <div class="form-group col-lg-4">
+            <label for="cost">Cost per Unit</label>
+            <input ng-model="cost" type="number" step="0.01" class="form-control" id="cost" name="cost">
+        </div>
+        <div class="col-lg-12">
+            <button ng-click="editType()" type="button" class="btn btn-default">Save</button>
+            <button ng-show="cit.active === false" ng-click="toggle()" type="button" class="btn btn-success">Activate</button>
+            <button ng-show="cit.active === true" ng-click="toggle()" type="button" class="btn btn-danger">Deactivate</button>
+        </div>
+    </form>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>

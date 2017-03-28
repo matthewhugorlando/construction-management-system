@@ -284,4 +284,38 @@ public class CJobController {
         invHolderRepo.save(ih);
         return ih;
     }
+
+    @RequestMapping(path = "/workers/add", method = RequestMethod.GET)
+    public CJob addWorker(@RequestParam Long cuId, Long cjId){
+        CJob cj = cJobRepo.findOne(cjId);
+        CUser cu = cUserRepo.findOne(cuId);
+        List<CUser> cjWorkers;
+        if(cj.getWorkedOnBy() !=  null) {
+            cjWorkers = cj.getWorkedOnBy();
+        }else{
+            cjWorkers = new ArrayList<>();
+        }
+
+        cjWorkers.add(cu);
+
+        cj.setWorkedOnBy(cjWorkers);
+        cJobRepo.save(cj);
+        return cj;
+    }
+
+    @RequestMapping(path = "/progress/update", method = RequestMethod.GET)
+    public CJob updateStatus(@RequestParam Long cjId){
+        CJob cj = cJobRepo.findOne(cjId);
+        String cjStatus = cj.getStatus();
+
+        if(cjStatus.equals("In Progress")){
+            cj.setStatus("Completed");
+        }
+        if(cjStatus.equals("Pending Start")){
+            cj.setStatus("In Progress");
+        }
+
+        cJobRepo.save(cj);
+        return cj;
+    }
 }

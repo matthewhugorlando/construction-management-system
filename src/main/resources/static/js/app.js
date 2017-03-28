@@ -150,7 +150,7 @@ angular.module("app", [])
                     }
             };
 
-            var res = $http.post('/rest/client/new', newClient);
+            var res = $http.post('/rest/client/new', newClient, authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.clientNew = data;
             });
@@ -180,7 +180,7 @@ angular.module("app", [])
     .controller('listClients', function($scope, $http) {
 
         $(document).ready(function(){
-            var res = $http.get("/rest/client/list");
+            var res = $http.get("/rest/client/list", authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.clientList = data;
             });
@@ -205,7 +205,7 @@ angular.module("app", [])
             $scope.tr = 0;
 
             var url1 = "/rest/client/select?id=" + window.localStorage.getItem(clientId);
-            var res1 = $http.get(url1);
+            var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                $scope.cl = data;
             });
@@ -213,12 +213,11 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
             var url2 = "/rest/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=In Progress" ;
-            var res2 = $http.get(url2);
+            var res2 = $http.get(url2, authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.jobListIP = data;
                 var jlip = data;
                 for(i=0;i<jlip.length;i++){
-                    console.log(jlip[i].jobPrice);
                     $scope.tr = $scope.tr + jlip[i].jobPrice;
                 }
 
@@ -227,20 +226,37 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
             var url3 = "/rest/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=Completed" ;
-            var res3 = $http.get(url3);
+            var res3 = $http.get(url3, authconfig);
             res3.success(function(data, status, headers, config) {
                 $scope.jobListC = data;
                 var jlc = data;
+                for(i=0;i<jlc.length;i++){
+                    $scope.tr = $scope.tr + jlc[i].jobPrice;
+                }
             });
             res3.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
             });
+            var url4 = "/rest/client/jobs?id=" + window.localStorage.getItem(clientId) + "&s=Pending Start" ;
+            var res4 = $http.get(url4, authconfig);
+            res4.success(function(data, status, headers, config) {
+                $scope.jobListPS = data;
+                var jlps = data;
+                for(i=0;i<jlps.length;i++){
+                    console.log(jlps[i].jobPrice);
+                    $scope.tr = $scope.tr + jlps[i].jobPrice;
+                }
 
-            $scope.jobFromClient = function(id){
-                window.localStorage.setItem(jobId, id);
-            };
+            });
+            res4.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
 
         });
+
+        $scope.jobFromClient = function(id){
+            window.localStorage.setItem(jobId, id);
+        };
 
         $scope.logout = function (){
             window.localStorage.removeItem("token");
@@ -266,7 +282,7 @@ angular.module("app", [])
             };
             date_input.datepicker(options);
 
-            var res1 = $http.get("/rest/client/list");
+            var res1 = $http.get("/rest/client/list", authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.clients = data;
             });
@@ -274,7 +290,7 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
 
-            var res2 = $http.get("/rest/inventory/itemtype/list");
+            var res2 = $http.get("/rest/inventory/itemtype/list", authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.cits = data;
             });
@@ -282,7 +298,7 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
 
-            var res3 = $http.get("/rest/invholder/list");
+            var res3 = $http.get("/rest/invholder/list", authconfig);
             res3.success(function(data, status, headers, config) {
                 $scope.ihs = data;
             });
@@ -424,7 +440,7 @@ angular.module("app", [])
                 inventory : $scope.items
             };
 
-            var res = $http.post('/rest/job/new', newJob);
+            var res = $http.post('/rest/job/new', newJob, authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.jobNew = data;
             });
@@ -454,9 +470,12 @@ angular.module("app", [])
 
     .controller('listJobs', function($scope, $http) {
         $(document).ready(function(){
-            var res = $http.get("/rest/job/list");
+            var res = $http.get("/rest/job/list", authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.jobList = data;
+            });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
             });
         });
 
@@ -476,7 +495,7 @@ angular.module("app", [])
             $scope.iForm = false;
             $scope.invFilter = "All";
             var url1 = "/rest/job/select?id=" + window.localStorage.getItem(jobId);
-            var res1 = $http.get(url1);
+            var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
             });
@@ -484,7 +503,7 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
 
-            var res2 = $http.get("/rest/inventory/itemtype/list");
+            var res2 = $http.get("/rest/inventory/itemtype/list", authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.cits = data;
             });
@@ -492,7 +511,7 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
             var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
-            var res3 = $http.get(url3);
+            var res3 = $http.get(url3, authconfig);
             res3.success(function(data, status, headers, config) {
                 $scope.jobInv = data;
                 var tc = 0;
@@ -505,7 +524,7 @@ angular.module("app", [])
             res3.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
             });
-            var res4 = $http.get("/rest/user/list");
+            var res4 = $http.get("/rest/user/list", authconfig);
             res4.success(function(data, status, headers, config) {
                 $scope.dbUsers = data;
             });
@@ -513,6 +532,16 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
         });
+
+        $scope.updateJobStatus = function(){
+            var res = $http.get("/rest/job/progress/update?cjId=" + window.localStorage.jobId, authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.job = data;
+            });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+        }
 
         $scope.filterInventory = function(filter){
             if(filter === "All"){
@@ -614,7 +643,7 @@ angular.module("app", [])
 
         $scope.findInv = function(){
             var url1 = "/rest/invholder/find?type=" + $scope.itType;
-            var res1 = $http.get(url1);
+            var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 var invhol = data;
                 for(i=0;i<invhol.length;i++){
@@ -628,7 +657,7 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
             var url2 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.job.name;
-            var res2 = $http.get(url2);
+            var res2 = $http.get(url2, authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.currItem = data;
             });
@@ -636,7 +665,7 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
             var url3 = "/rest/inventory/type/loc/find?type=" + $scope.itType + "&locId=" + $scope.job.id;
-            var res3 = $http.get(url3);
+            var res3 = $http.get(url3, authconfig);
             res3.success(function(data, status, headers, config) {
                 $scope.currLocInv = data;
             });
@@ -650,7 +679,7 @@ angular.module("app", [])
         $scope.findQty = function(){
             $scope.qs = [];
             var url1 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.itFrom;
-            var res1 = $http.get(url1);
+            var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 var cibF = data;
                 $scope.cibCheck = data;
@@ -699,11 +728,11 @@ angular.module("app", [])
             res1.success(function(data, status, headers, config) {
                 $scope.jobNew = data;
                 var url2 = "/rest/job/select?id=" + window.localStorage.getItem(jobId);
-                var res2 = $http.get(url2);
+                var res2 = $http.get(url2, authconfig);
                 res2.success(function(data, status, headers, config) {
                     $scope.job = data;
                     var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
-                    var res3 = $http.get(url3);
+                    var res3 = $http.get(url3, authconfig);
                     res3.success(function(data, status, headers, config) {
                         $scope.jobInv = data;
                         var tc = 0;
@@ -746,11 +775,11 @@ angular.module("app", [])
                 jobId: window.localStorage.getItem(jobId)
             };
 
-            var res1 = $http.post('/rest/job/task/new', newTask);
+            var res1 = $http.post('/rest/job/task/new', newTask, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.jobNew = data;
                 var url2 = "/rest/job/select?id=" + window.localStorage.getItem(jobId);
-                var res2 = $http.get(url2);
+                var res2 = $http.get(url2, authconfig);
                 res2.success(function(data, status, headers, config) {
                     $scope.job = data;
                 });
@@ -769,9 +798,9 @@ angular.module("app", [])
 
         $scope.addWorker = function(){
             var url1 = "/rest/job/workers/add?cuId=" + $scope.wUser + "&cjId=" + $scope.job.id;
-            var res1 = $http.get(url1);
+            var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
-                $scope.wUserSuccess = data;
+                $scope.job = data;
             });
             $scope.wUser = "";
             $scope.wForm = false;
@@ -780,7 +809,7 @@ angular.module("app", [])
         $scope.markAsComplete = function(id){
             console.log("Marked task " + id + " as complete");
             var url1 = "/rest/job/task/completed?ctId=" + id + "&cjId=" + $scope.job.id;
-            var res1 = $http.get(url1);
+            var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
             });
@@ -807,14 +836,14 @@ angular.module("app", [])
 
     .controller('newItem', function($scope, $http) {
         $(document).ready(function(){
-            var res1 = $http.get("/rest/job/list");
+            var res1 = $http.get("/rest/job/list", authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.cjs = data;
             });
             res1.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
             });
-            var res2 = $http.get("/rest/inventory/itemtype/list");
+            var res2 = $http.get("/rest/inventory/itemtype/list", authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.cits = data;
             });
@@ -834,13 +863,13 @@ angular.module("app", [])
                 locId : $scope.jLoc
             };
 
-            var res = $http.post('/inventory/item/new', newItem);
+            var res = $http.post('/rest/inventory/item/new', newItem, authconfig);
             res.success(function(data, status, headers, config) {
-                $scope.clientNew = data;
+                $scope.itemNew = data;
             });
-            res.error(function(data, status, headers, config) {
-                window.location.replace("/login.html");
-            });
+            // res.error(function(data, status, headers, config) {
+            //     window.location.replace("/login.html");
+            // });
 
             $scope.qty = '';
             $scope.status = '';
@@ -858,21 +887,19 @@ angular.module("app", [])
     .controller('listItems', function($scope, $http) {
         $(document).ready(function(){
 
-            var res1 = $http.get("/rest/inventory/list");
+            var res1 = $http.get("/rest/inventory/list", authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.itemList = data;
             });
             res1.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
             });
-            var res2 = $http.get("/rest/job/list");
+            var res2 = $http.get("/rest/job/list", authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.jobList = data;
-                console.log(data);
                 var jNames = [];
 
                 for(i=0;i<data.length;i++){
-                    console.log(data[i]);
                     jNames[data[i].id] = data[i].name;
                 }
 
@@ -891,9 +918,8 @@ angular.module("app", [])
 
     .controller('indvItem', function($scope, $http){
         $(document).ready(function(){
-            console.log("Item page!" + localStorage.getItem(jobId));
             var url = "/rest/inventory/select?id=" + window.localStorage.getItem(itemId);
-            var res = $http.get(url);
+            var res = $http.get(url, authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.it = data;
             });
@@ -912,16 +938,13 @@ angular.module("app", [])
     .controller('newType', function($scope, $http) {
 
         $scope.submitType = function(){
-            console.log("Type Submitted!");
-
-
             var newType = {
                 name : $scope.name,
                 unitOfMeasurement : $scope.units,
                 costPerUnit : $scope.cost
             };
 
-            var res = $http.post('/rest/inventory/itemtype/new', newType);
+            var res = $http.post('/rest/inventory/itemtype/new', newType, authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.clientNew = data;
             });
@@ -942,7 +965,7 @@ angular.module("app", [])
 
     .controller('listTypes', function($scope, $http) {
         $(document).ready(function(){
-            var res = $http.get("/rest/inventory/itemtype/list");
+            var res = $http.get("/rest/inventory/itemtype/list", authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.itemTypes = data;
             });
@@ -952,8 +975,34 @@ angular.module("app", [])
         });
 
         $scope.selectType = function(id){
-            window.localStorage.setItem(typeId, id);
+            window.localStorage.setItem("typeId", id);
         };
+    })
+
+    .controller('editType', function($scope, $http) {
+        $(document).ready(function(){
+            var res = $http.get("/rest/inventory/itemtype/find?citId=" + window.localStorage.getItem("typeId"), authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.cit = data;
+                $scope.name = $scope.cit.name;
+                $scope.units = $scope.cit.unitOfMeasurement;
+                $scope.cost = $scope.cit.costPerUnit;
+            });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+        });
+
+        $scope.toggle = function(){
+            var res = $http.get("/rest/inventory/itemtype/toggleActive?citId=" + window.localStorage.getItem("typeId"), authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.cit = data;
+            });
+            // res.error(function(data, status, headers, config) {
+            //     window.location.replace("/login.html");
+            // });
+        };
+
     })
 
     // ==================
@@ -995,7 +1044,7 @@ angular.module("app", [])
                 },
             };
 
-            var res = $http.post('/rest/user/new', newUser);
+            var res = $http.post('/rest/user/new', newUser, authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.userNew = data;
             });
@@ -1026,7 +1075,7 @@ angular.module("app", [])
     .controller('listUsers', function($scope, $http) {
 
         $(document).ready(function(){
-            var res = $http.get("/rest/user/list");
+            var res = $http.get("/rest/user/list", authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.userList = data;
             });
@@ -1049,16 +1098,16 @@ angular.module("app", [])
 
     .service('dataService', function($http){
         this.inProgressJobs = function(callback){
-            $http.get("/rest/job/list/inprogress")
+            $http.get("/rest/job/list/inprogress", authconfig)
                 .then(callback)
         };
 
         this.listOfClients = function(){
-            $http.get("/rest/client/list")
+            $http.get("/rest/client/list", authconfig)
         };
 
         this.clientSubmit = function(){
-            $http.post("/rest/client/new", data)
+            $http.post("/rest/client/new", data, authconfig)
                 .then(successCallback, errorCallback);
         }
     });

@@ -67,7 +67,7 @@
 
 <div class="container">
     <div class="row text-center">
-        <h2>Client: {{cl.name}}</h2>
+        <h2><strong>Client:</strong> {{cl.name}}</h2>
     </div>
     <div class="row">
         <div class="col-lg-3 col-lg-offset-2">
@@ -96,11 +96,14 @@
             <div class="panel panel-default">
                 <!-- Default panel contents -->
                 <div class="panel-heading">
-                    <h3 class="panel-title">Current Jobs</h3>
+                    <h3 class="panel-title">In Progress Jobs</h3>
+                </div>
+                <div ng-if="jobListIP.length === 0" class="panel-body">
+                    No jobs are currently in progress for {{cl.name}}.
                 </div>
 
                 <!-- Table -->
-                <table class="table">
+                <table ng-if="jobListIP.length > 0" class="table">
                     <thead>
                     <tr>
                         <th>Name</th>
@@ -129,8 +132,11 @@
                     <h3 class="panel-title">Completed Jobs</h3>
                 </div>
 
+                <div ng-if="jobListC.length === 0" class="panel-body">
+                    No jobs have been completed for {{cl.name}}.
+                </div>
                 <!-- Table -->
-                <table class="table">
+                <table ng-if="jobListC.length > 0" class="table">
                     <thead>
                     <tr>
                         <th>Name</th>
@@ -149,6 +155,39 @@
                         <td>{{jc.endDate}}</td>
                         <td>{{jc.status}}</td>
                         <td><a href="../jobs/job.html"><button ng-click="jobFromClient(jc.id)" type="button" class="btn btn-default">Go To Job</button></a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">
+                    <h3 class="panel-title">Jobs Pending Start</h3>
+                </div>
+                <div ng-if="jobListPS.length === 0" class="panel-body">
+                    There are no jobs pending start for {{cl.name}}.
+                </div>
+                <!-- Table -->
+                <table ng-if="jobListPS.length > 0" class="table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Client</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="jps in jobListPS">
+                        <th scope="row">{{jps.name}}</th>
+                        <td>{{jps.client.name}}</td>
+                        <td>{{jps.startDate}}</td>
+                        <td>{{jps.endDate}}</td>
+                        <td>{{jps.status}}</td>
+                        <td><a href="../jobs/job.html"><button ng-click="jobFromClient(jps.id)" type="button" class="btn btn-default">Go To Job</button></a></td>
                     </tr>
                     </tbody>
                 </table>

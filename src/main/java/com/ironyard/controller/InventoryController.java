@@ -51,16 +51,26 @@ public class InventoryController {
         return cit;
     }
 
-//    @RequestMapping(path = "/itemtype/new", method = RequestMethod.POST)
-//    public CItemType addItemType(@RequestParam String name,
-//                                 @RequestParam Boolean active,
-//                                 @RequestParam String unitOfMeasurement,
-//                                 @RequestParam Double costPerUnit){
-//
-//        CItemType cit = new CItemType(name, active, unitOfMeasurement, costPerUnit);
-//        cItemTypeRepo.save(cit);
-//        return cit;
-//    }
+    @RequestMapping(path = "/itemtype/find", method = RequestMethod.GET)
+    public CItemType addItemType(@RequestParam Long citId){
+        return cItemTypeRepo.findOne(citId);
+    }
+
+    @RequestMapping(path = "/itemtype/update", method = RequestMethod.POST)
+    public CItemType updateItemType(@RequestBody CItemType cit){
+        CItemType citToUpdate = cItemTypeRepo.findByName(cit.getName());
+        cit.setId(citToUpdate.getId());
+        cItemTypeRepo.save(cit);
+        return cit;
+    }
+
+    @RequestMapping(path = "/itemtype/toggleActive", method = RequestMethod.GET)
+    public CItemType toggleItemActive(@RequestParam Long citId){
+        CItemType cit = cItemTypeRepo.findOne(citId);
+        cit.setActive(!cit.isActive());
+        cItemTypeRepo.save(cit);
+        return cit;
+    }
 
     @RequestMapping(path = "/itemtype/list", method = RequestMethod.GET)
     public Iterable<CItemType> listItemTypes(){
@@ -110,50 +120,6 @@ public class InventoryController {
 
         return cib;
     }
-
-//    @RequestMapping(path = "/item/new", method = RequestMethod.POST)
-//    public CItemBucket addItems(@RequestParam Integer quantity,
-//                               @RequestParam String status,
-//                               @RequestParam String type,
-//                               @RequestParam String loc){
-//
-//        List<CItem> cis;
-//
-//        CItemType cit = cItemTypeRepo.findByName(type);
-//        InvHolder location = invHolderRepo.findByName(loc);
-//        CItemBucket cib = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId(type, location.getId(), cit.getId());
-//
-//        if(cib != null){
-//            cis = cib.getItems();
-//        }else{
-//            cis = new ArrayList<>();
-//            cib = new CItemBucket(quantity, status, cit, location);
-//        }
-//
-//        for(int i=0; i<quantity; i++){
-//            CItem ci = new CItem(status, cit);
-//            cItemRepo.save(ci);
-//            cis.add(ci);
-//        }
-//
-//        Double totalCost = cis.size() * cit.getCostPerUnit();
-//
-//        cib.setTotalCost(totalCost);
-//        cib.setItems(cis);
-//        cItemBucketRepo.save(cib);
-//
-//        if(location.getInventory() != null) {
-//            location.getInventory().add(cib);
-//        }else{
-//            List<CItemBucket> cibs = new ArrayList<>();
-//            cibs.add(cib);
-//            location.setInventory(cibs);
-//        }
-//
-//        invHolderRepo.save(location);
-//
-//        return cib;
-//    }
 
     @RequestMapping(path = "/item/list", method = RequestMethod.GET)
     public Iterable<CItem> listItems(){
