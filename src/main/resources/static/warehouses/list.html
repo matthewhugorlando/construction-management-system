@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
-<body>
+<body ng-controller="listWarehouses">
 
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
@@ -66,8 +66,28 @@
 </nav>
 
 <div class="container">
+    <div class="row text-center">
+        <h2>Warehouse List</h2>
+    </div>
     <div class="row">
-
+        <table class="table">
+            <thead style="font-size: 1.5em;">
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Active</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="w in warehouseList">
+                <th scope="row">{{w.name}}</th>
+                <td>{{w.location.street}}, {{w.location.city}}, {{w.location.state}} {{w.location.zipCode}}</td>
+                <td>{{w.active}}</td>
+                <td><a href="warehouse.html"><button ng-click="selectWarehouse(w.id)" type="button" class="btn btn-default">Select</button></a></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

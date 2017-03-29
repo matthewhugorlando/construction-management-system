@@ -178,6 +178,59 @@ public class InventoryController {
         return destCIB;
     }
 
+    @RequestMapping(path = "/item/update", method = RequestMethod.GET)
+    public InvHolder updateItemStatus(@RequestParam Long id){
+
+        CItemBucket startCIB = cItemBucketRepo.findOne(id);
+        InvHolder ih = startCIB.getLocation();
+        List<CItemBucket> cibs = ih.getInventory();
+        List<CItem> startCIs = startCIB.getItems();
+        CItemType cit = cItemTypeRepo.findByName(startCIB.getBucketType().getName());
+        CItemBucket destCIB;
+        List<CItem> destCIs;
+
+        if(startCIB.getStatus().equals("Pending Delivery")){
+            destCIB = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("On Site", ih.getId(), cit.getId());
+            if(destCIB == null){
+                destCIB = new CItemBucket(startCIB.getQuantity(), "On Site", cit, ih);
+                destCIs = new ArrayList<>();
+            }else{
+                destCIs = destCIB.getItems();
+            }
+        }else if(startCIB.getStatus().equals("On Site")){
+            destCIB = cItemBucketRepo.findByStatusAndLocationIdAndBucketTypeId("Used", startCIB.getLocation().getId(), startCIB.getBucketType().getId());
+            if(destCIB == null){
+                destCIB = new CItemBucket(startCIB.getQuantity(), "Used", cit, startCIB.getLocation());
+                destCIs = new ArrayList<>();
+            }else{
+                destCIs = destCIB.getItems();
+            }
+        }else{
+            destCIB = null;
+            destCIs = null;
+        }
+
+        for(int i=0; i<startCIB.getQuantity(); i++){
+            CItem ci = startCIs.get(i);
+            ci.setStatus(destCIB.getStatus());
+            destCIs.add(ci);
+        }
+        cibs.remove(startCIB);
+        cItemBucketRepo.delete(startCIB);
+        destCIB.setItems(destCIs);
+        destCIB.setQuantity(destCIs.size());
+        Double totalCost = cit.getCostPerUnit()*destCIs.size();
+        destCIB.setTotalCost(totalCost);
+
+        cItemBucketRepo.save(destCIB);
+
+        cibs.add(destCIB);
+        ih.setInventory(cibs);
+
+        return ih;
+    }
+
+
     @RequestMapping(path = "/find", method = RequestMethod.GET)
     public CItemBucket findForQty(@RequestParam String type, String from){
         InvHolder ih = invHolderRepo.findByName(from);
@@ -208,5 +261,6 @@ public class InventoryController {
         CItemType cit = cItemTypeRepo.findByName(type);
         return cItemBucketRepo.findByLocationAndBucketType(ih, cit);
     }
+
 
 }

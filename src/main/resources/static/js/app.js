@@ -1038,6 +1038,26 @@ angular.module("app", [])
             });
         };
 
+        $scope.updateItemStatus = function(id){
+            var res = $http.get('/rest/inventory/item/update?id=' + id, authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.job = data;
+                var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
+                var res3 = $http.get(url3, authconfig);
+                res3.success(function(data, status, headers, config) {
+                    $scope.jobInv = data;
+                    var tc = 0;
+                    for(i=0;i<$scope.jobInv.length;i++){
+                        tc += $scope.jobInv[i].totalCost;
+                    }
+                    $scope.jobTotalCost = tc;
+                });
+                res3.error(function(data, status, headers, config) {
+                    window.location.replace("/login.html");
+                });
+            });
+        };
+
         $scope.logout = function (){
             window.localStorage.removeItem("token");
             window.location.replace("/login.html");
@@ -1212,9 +1232,9 @@ angular.module("app", [])
             res.success(function(data, status, headers, config) {
                 $scope.cit = data;
             });
-            // res.error(function(data, status, headers, config) {
-            //     window.location.replace("/login.html");
-            // });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
         };
 
     })
@@ -1449,15 +1469,11 @@ angular.module("app", [])
             }
         };
 
-        $scope.submitJob = function(){
-            console.log("Job Submitted!");
+        $scope.submitWarehouse = function(){
+            console.log("Warehouse Submitted!");
 
-            var newJob = {
+            var newWarehouse = {
                 name : $scope.name,
-                clId : $scope.client,
-                startDate : $scope.startDate,
-                status : $scope.status,
-                jobPrice : $scope.jobPrice,
                 address : {
                     street : $scope.street,
                     city : $scope.city,
@@ -1467,32 +1483,272 @@ angular.module("app", [])
                 inventory : $scope.items
             };
 
-            var res = $http.post('/rest/job/new', newJob, authconfig);
+            var res = $http.post('/rest/warehouse/new', newWarehouse, authconfig);
             res.success(function(data, status, headers, config) {
-                $scope.jobNew = data;
+                $scope.warehouseNew = data;
             });
-            res.error(function(data, status, headers, config) {
-                window.location.replace("/login.html");
-            });
+            // res.error(function(data, status, headers, config) {
+            //     window.location.replace("/login.html");
+            // });
 
             $scope.name = '';
-            $scope.client = '';
-            $scope.startDate = '';
-            $scope.status = '';
-            $scope.jobPrice = '';
             $scope.street = '';
             $scope.city = '';
             $scope.state = '';
             $scope.zip = '';
             $scope.items = [];
             $scope.st = false;
-        }
+        };
 
         $scope.logout = function (){
             window.localStorage.removeItem("token");
             window.location.replace("/login.html");
         }
 
+    })
+
+    .controller('listWarehouses', function($scope, $http, $filter) {
+        $(document).ready(function(){
+            var res = $http.get("/rest/warehouse/list", authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.warehouseList = $filter('orderBy')(data, 'name');
+            });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+        });
+
+        $scope.selectWarehouse = function(id){
+            window.localStorage.setItem("warehouseId", id);
+        };
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        }
+    })
+
+    .controller('indvWarehouse', function($scope, $http){
+        $(document).ready(function(){
+            console.log("Warehouse Page: " + window.localStorage.getItem("warehouseId"));
+            $scope.iForm = false;
+            $scope.invFilter = "All";
+            var url1 = "/rest/warehouse/select?id=" + window.localStorage.getItem("warehouseId");
+            var res1 = $http.get(url1, authconfig);
+            res1.success(function(data, status, headers, config) {
+                $scope.warehouse = data;
+            });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+
+            var res2 = $http.get("/rest/inventory/itemtype/list", authconfig);
+            res2.success(function(data, status, headers, config) {
+                $scope.cits = data;
+            });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+            var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem("warehouseId");
+            var res3 = $http.get(url3, authconfig);
+            res3.success(function(data, status, headers, config) {
+                $scope.wInv = data;
+                console.log("Finding the inventory");
+                $scope.filterInventory("All");
+            });
+            res3.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+        });
+
+        $scope.filterInventory = function(filter){
+            console.log("Filter Inventory called");
+            if(filter === "All"){
+                $scope.invToShow = $scope.wInv;
+            }else{
+                $scope.invToShow = [];
+                for(i=0;i<$scope.wInv.length;i++){
+                    if($scope.wInv[i].status === filter){
+                        $scope.invToShow.push($scope.wInv[i]);
+                    }
+                }
+            }
+        };
+
+        $scope.showIForm = function(){
+            $scope.iForm = !($scope.iForm);
+
+            $scope.itType = '';
+            $scope.itQty = '';
+            $scope.itStatus = '';
+            $scope.itFrom = '';
+            $scope.maxQty = '';
+            $scope.qs = '';
+            $scope.ihswt = '';
+            $scope.tTitle = '';
+            $scope.tDesc = '';
+            $scope.wUser = '';
+            $scope.currLocInv = [];
+            document.getElementById("itFrom").disabled=true;
+            document.getElementById("itQty").disabled=true;
+            document.getElementById("itStatus").disabled=true;
+            document.getElementById("itAddBtn").disabled=true;
+            document.getElementById("tAddBtn").disabled = true;
+            document.getElementById("wAddBtn").disabled = true;
+        };
+
+        $scope.findInv = function(){
+            var url1 = "/rest/invholder/find?type=" + $scope.itType;
+            var res1 = $http.get(url1, authconfig);
+            res1.success(function(data, status, headers, config) {
+                var invhol = data;
+                for(i=0;i<invhol.length;i++){
+                    if(invhol[i].id === $scope.job.id){
+                        invhol.splice(i, 1);
+                    }
+                }
+                $scope.ihswt = invhol;
+            });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+            var url2 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.job.name;
+            var res2 = $http.get(url2, authconfig);
+            res2.success(function(data, status, headers, config) {
+                $scope.currItem = data;
+            });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+            var url3 = "/rest/inventory/type/loc/find?type=" + $scope.itType + "&locId=" + $scope.job.id;
+            var res3 = $http.get(url3, authconfig);
+            res3.success(function(data, status, headers, config) {
+                $scope.currLocInv = data;
+            });
+            res3.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+
+            document.getElementById("itFrom").disabled=false;
+        };
+
+        $scope.findQty = function(){
+            $scope.qs = [];
+            var url1 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.itFrom;
+            var res1 = $http.get(url1, authconfig);
+            res1.success(function(data, status, headers, config) {
+                var cibF = data;
+                $scope.cibCheck = data;
+                if($scope.itFrom === "New"){
+                    for(j=0;j<30;j++){
+                        $scope.qs.push(j+1);
+                    }
+                    $scope.maxQty = 100000;
+                }else {
+                    for (i = 0; i < cibF.quantity; i++) {
+                        $scope.qs.push(i + 1);
+                    }
+                    $scope.maxQty = cibF.quantity;
+
+                }
+                $scope.uom = cibF.bucketType.unitOfMeasurement;
+            });
+
+            document.getElementById("itQty").disabled=false;
+        };
+
+        $scope.enableStatus = function (){
+            document.getElementById("itStatus").disabled=false;
+        };
+
+        $scope.enableItAddBtn = function (){
+            document.getElementById("itAddBtn").disabled=false;
+        };
+
+        $scope.addItem = function(){
+            $scope.st = true;
+            var exists = false;
+            var index = 0;
+            var newItem = {
+                type : $scope.itType,
+                qty : parseInt($scope.itQty),
+                status : $scope.itStatus,
+                from : $scope.itFrom,
+                maxQty : $scope.maxQty,
+                uOfM : $scope.uom
+            };
+            console.log("Add: " + newItem.type);
+
+            var res1 = $http.post('/rest/job/inventory/new?cjId=' + window.localStorage.getItem("warehouseId"), newItem, authconfig);
+            res1.success(function(data, status, headers, config) {
+                $scope.jobNew = data;
+                var url2 = "/rest/job/select?id=" + window.localStorage.getItem(jobId);
+                var res2 = $http.get(url2, authconfig);
+                res2.success(function(data, status, headers, config) {
+                    $scope.job = data;
+                    var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
+                    var res3 = $http.get(url3, authconfig);
+                    res3.success(function(data, status, headers, config) {
+                        $scope.jobInv = data;
+                        var tc = 0;
+                        for(i=0;i<$scope.jobInv.length;i++){
+                            tc += $scope.jobInv[i].totalCost;
+                        }
+                        $scope.jobTotalCost = tc;
+                        $scope.filterInventory($scope.invFilter);
+                    });
+                });
+            });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+
+            $scope.itType = '';
+            $scope.itQty = '';
+            $scope.itStatus = '';
+            $scope.itFrom = '';
+            $scope.maxQty = '';
+            $scope.qs = '';
+            $scope.ihswt = '';
+            $scope.currLocInv = [];
+            document.getElementById("itFrom").disabled=true;
+            document.getElementById("itQty").disabled=true;
+            document.getElementById("itStatus").disabled=true;
+            document.getElementById("itAddBtn").disabled=true;
+        };
+
+        $scope.updateItemStatus = function(id){
+            var res = $http.get('/rest/inventory/item/update?id=' + id, authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.job = data;
+                var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem("warehouseId");
+                var res3 = $http.get(url3, authconfig);
+                res3.success(function(data, status, headers, config) {
+                    $scope.wInv = data;
+                });
+                res3.error(function(data, status, headers, config) {
+                    window.location.replace("/login.html");
+                });
+            });
+        };
+
+        $scope.filterInventory = function(filter){
+            if(filter === "All"){
+                $scope.invToShow = $scope.jobInv;
+            }else{
+                $scope.invToShow = [];
+                for(i=0;i<$scope.wInv.length;i++){
+                    if($scope.wInv[i].status === filter){
+                        $scope.invToShow.push($scope.jobInv[i]);
+                    }
+                }
+            }
+        };
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        }
     })
 
     .service('dataService', function($http){

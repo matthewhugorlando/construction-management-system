@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <title>CMS - Warehouse</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .pagination li a {
+            color: black;
+        }
+        .pagination li a:focus,
+        .pagination li a:hover,
+        .pagination li.active a{
+            background: black;
+            border-color:black;
+            color:white;
+        }
+    </style>
+</head>
+<body ng-controller="indvWarehouse">
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">Construction Management System</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a href="../index.html">Home</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Clients
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="../clients/list.html">List</a></li>
+                    <li><a href="../clients/new.html">Add New</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Items
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="../items/list.html">List</a></li>
+                    <li><a href="../items/new.html">Add New</a></li>
+                    <li><a href="../items/types.html">Types</a></li>
+                    <li><a href="../items/newtype.html">New Type</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Jobs
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="../jobs/list.html">List</a></li>
+                    <li><a href="../jobs/new.html">Add New</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Users
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="../users/list.html">List</a></li>
+                    <li><a href="../users/new.html">Add New</a></li>
+                </ul>
+            </li>
+            <li class="dropdown active">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Warehouses
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="list.html">List</a></li>
+                    <li><a href="new.html">Add New</a></li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome Matt!</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row text-center">
+        <h2><strong>Warehouse:</strong> {{warehouse.name}}</h2>
+    </div>
+    <div class="row">
+        <div class="col-lg-5 col-lg-offset-2">
+            <p><strong>Street Address:</strong> {{warehouse.location.street}}</p>
+            <p><strong>City:</strong> {{warehouse.location.city}}</p>
+        </div>
+        <div class="col-lg-5">
+            <p><strong>State:</strong> {{warehouse.location.state}}</p>
+            <p><strong>Zip Code:</strong> {{warehouse.location.zipCode}}</p>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <button ng-click="showIForm()" type="button" class="btn btn-default">New Inventory</button>
+        </div>
+    </div>
+    <br>
+    <div class="row" ng-show="iForm">
+        <div class="form-group col-lg-2 col-lg-offset-1">
+            <select ng-model="itType" ng-change="findInv()" class="form-control" id="itType" name="type">
+                <option disabled selected value>Type</option>
+                <option ng-repeat="cit in cits">{{cit.name}}</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-2">
+            <select ng-model="itFrom" ng-change="findQty()" class="form-control" id="itFrom" disabled="true">
+                <option disabled selected value>From</option>
+                <option selected>New</option>
+                <option ng-repeat="ih in ihswt">{{ih.name}}</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-2">
+            <select ng-model="itQty" ng-change="enableStatus()" class="form-control" id="itQty" name="type" disabled="true">
+                <option disabled selected value>Quantity</option>
+                <option ng-repeat="q in qs">{{q}}</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-2">
+            <select ng-model="itStatus" ng-change="enableItAddBtn()" class="form-control" id="itStatus" disabled="true">
+                <option disabled selected value>Status</option>
+                <option>Pending Delivery</option>
+                <option>On Site</option>
+                <option>Used</option>
+            </select>
+        </div>
+        <div class="form-group col-lg-3">
+            <button ng-click="addItem()" type="button" class="btn btn-success" id="itAddBtn" disabled="true">Add</button>
+        </div>
+        <div class="col-lg-8 col-lg-offset-2" ng-if="currLocInv.length > 0">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Item Type</th>
+                    <th>Status</th>
+                    <th>Quantity</th>
+                    <th>Cost</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="i in currLocInv">
+                    <th scope="row">{{i.bucketType.name}}</th>
+                    <td>{{i.status}}</td>
+                    <td>{{i.quantity}}</td>
+                    <td>${{i.totalCost}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Inventory</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Item Type</th>
+                            <th>Status</th>
+                            <th>Quantity</th>
+                            <th>Cost</th>
+                            <th>
+                                <select ng-model="invFilter" ng-change="filterInventory(invFilter)" class="form-control" id="invFilter">
+                                    <option>All</option>
+                                    <option>Pending Delivery</option>
+                                    <option>On Site</option>
+                                    <option>Used</option>
+                                </select>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="i in invToShow">
+                            <th scope="row">{{i.bucketType.name}}</th>
+                            <td>{{i.status}}</td>
+                            <td>{{i.quantity}}</td>
+                            <td>${{i.totalCost}}</td>
+                            <td>
+                                <button ng-if="i.status === 'Pending Delivery'" ng-click="updateItemStatus(i.id)" type="button" class="btn btn-success">Delivered</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../js/vendor/angular.js" type="text/javascript"></script>
+<script src="../js/app.js" type="text/javascript"></script>
+</body>
+</html>

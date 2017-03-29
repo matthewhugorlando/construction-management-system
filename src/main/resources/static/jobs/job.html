@@ -308,7 +308,10 @@
                                     <td>{{i.status}}</td>
                                     <td>{{i.quantity}}</td>
                                     <td>${{i.totalCost}}</td>
-                                    <td></td>
+                                    <td>
+                                        <button ng-if="i.status === 'Pending Delivery'" ng-click="updateItemStatus(i.id)" type="button" class="btn btn-success">Delivered</button>
+                                        <button ng-if="i.status === 'On Site'" ng-click="updateItemStatus(i.id)" type="button" class="btn btn-warning">Used</button>
+                                    </td>
                                 </tr>
                         </tbody>
                     </table>

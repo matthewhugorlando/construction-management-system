@@ -1,5 +1,7 @@
 package com.ironyard.data;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+
 import javax.persistence.*;
 
 /**
