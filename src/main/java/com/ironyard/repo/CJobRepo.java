@@ -13,4 +13,5 @@ public interface CJobRepo extends PagingAndSortingRepository<CJob, Long> {
     public Iterable<CJob> findByStartDate(Date startDate);
     public Iterable<CJob> findByStatus(String status);
     public Iterable<CJob> findByClientAndStatus(CClient cClient, String Status);
+    public Iterable<CJob> findByStatusAndWorkedOnById(String status, Long workedOnById);
 }

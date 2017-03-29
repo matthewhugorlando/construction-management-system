@@ -43,6 +43,12 @@ public class CClientController {
         return cClientRepo.findOne(id);
     }
 
+    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    public CClient updateClient(@RequestBody CClient cc){
+        cClientRepo.save(cc);
+        return cc;
+    }
+
     @RequestMapping(path = "/jobs", method = RequestMethod.GET)
     public Iterable<CJob> findClientJobs(@RequestParam Long id, @RequestParam String s){
         CClient cc = cClientRepo.findOne(id);

@@ -167,9 +167,7 @@ angular.module("app", [])
             $scope.city = '';
             $scope.state = '';
             $scope.zip = '';
-
-
-        }
+        };
 
         $scope.logout = function (){
             window.localStorage.removeItem("token");
@@ -177,12 +175,12 @@ angular.module("app", [])
         }
     })
 
-    .controller('listClients', function($scope, $http) {
+    .controller('listClients', function($scope, $http, $filter) {
 
         $(document).ready(function(){
             var res = $http.get("/rest/client/list", authconfig);
             res.success(function(data, status, headers, config) {
-                $scope.clientList = data;
+                $scope.clientList = $filter('orderBy')(data, 'name')
             });
             res.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
@@ -191,6 +189,219 @@ angular.module("app", [])
 
         $scope.selectClient = function(id){
             window.localStorage.setItem(clientId, id);
+        };
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        };
+
+    })
+
+    .controller('editClient', function($scope, $http) {
+        $(document).ready(function(){
+            console.log("Edit Client Controller checking in!");
+            var res = $http.get('/rest/client/select?id=' + window.localStorage.getItem(clientId), authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.client = data;
+                $scope.name = data.name;
+                $scope.fn = data.contactFirstName;
+                $scope.ln = data.contactLastName;
+                $scope.phone = data.contactPhoneNumber;
+                $scope.cEmail = data.contactEmail;
+                $scope.street =  data.address.street;
+                $scope.city = data.address.city;
+                $scope.state = data.address.state;
+                $scope.zip = data.address.zipCode;
+
+                switch (data.state) {
+                    case "AK":
+                        $scope.state = "Alaska";
+                        break;
+                    case "AL":
+                        $scope.state = "Alabama";
+                        break;
+                    case "AR":
+                        $scope.state = "Arkansas";
+                        break;
+                    case "AZ":
+                        $scope.state = "Arizona";
+                        break;
+                    case "CA":
+                        $scope.state = "California";
+                        break;
+                    case "CO":
+                        $scope.state = "Colorado";
+                        break;
+                    case "CT":
+                        $scope.state = "Connecticut";
+                        break;
+                    case "DC":
+                        $scope.state = "District of Columbia";
+                        break;
+                    case "DE":
+                        $scope.state = "Delaware";
+                        break;
+                    case "FL":
+                        $scope.state = "Florida";
+                        break;
+                    case "GA":
+                        $scope.state = "Georgia";
+                        break;
+                    case "HI":
+                        $scope.state = "Hawaii";
+                        break;
+                    case "IA":
+                        $scope.state = "Iowa";
+                        break;
+                    case "ID":
+                        $scope.state = "Idaho";
+                        break;
+                    case "IL":
+                        $scope.state = "Illinois";
+                        break;
+                    case "IN":
+                        $scope.state = "Indiana";
+                        break;
+                    case "KS":
+                        $scope.state = "Kansas";
+                        break;
+                    case "KY":
+                        $scope.state = "Kentucky";
+                        break;
+                    case "LA":
+                        $scope.state = "Louisiana";
+                        break;
+                    case "MA":
+                        $scope.state = "Massachusetts";
+                        break;
+                    case "MD":
+                        $scope.state = "Maryland";
+                        break;
+                    case "ME":
+                        $scope.state = "Maine";
+                        break;
+                    case "MI":
+                        $scope.state = "Michigan";
+                        break;
+                    case "MN":
+                        $scope.state = "Minnesota";
+                        break;
+                    case "MO":
+                        $scope.state = "Missouri";
+                        break;
+                    case "MS":
+                        $scope.state = "Mississippi";
+                        break;
+                    case "MT":
+                        $scope.state = "Montana";
+                        break;
+                    case "NC":
+                        $scope.state = "North Carolina";
+                        break;
+                    case "ND":
+                        $scope.state = "North Dakota";
+                        break;
+                    case "NE":
+                        $scope.state = "Nebraska";
+                        break;
+                    case "NH":
+                        $scope.state = "New Hampshire";
+                        break;
+                    case "NJ":
+                        $scope.state = "New Jersey";
+                        break;
+                    case "NM":
+                        $scope.state = "New Mexico";
+                        break;
+                    case "NV":
+                        $scope.state = "Nevada";
+                        break;
+                    case "NY":
+                        $scope.state = "New York";
+                        break;
+                    case "OH":
+                        $scope.state = "Ohio";
+                        break;
+                    case "OK":
+                        $scope.state = "Oklahoma";
+                        break;
+                    case "OR":
+                        $scope.state = "Oregon";
+                        break;
+                    case "PA":
+                        $scope.state = "Pennsylvania";
+                        break;
+                    case "PR":
+                        $scope.state = "Puerto Rico";
+                        break;
+                    case "RI":
+                        $scope.state = "Rhode Island";
+                        break;
+                    case "SC":
+                        $scope.state = "South Carolina";
+                        break;
+                    case "SD":
+                        $scope.state = "South Dakota";
+                        break;
+                    case "TN":
+                        $scope.state = "Tennessee";
+                        break;
+                    case "TX":
+                        $scope.state = "Texas";
+                        break;
+                    case "UT":
+                        $scope.state = "Utah";
+                        break;
+                    case "VA":
+                        $scope.state = "Virginia";
+                        break;
+                    case "VT":
+                        $scope.state = "Vermont";
+                        break;
+                    case "WA":
+                        $scope.state = "Washington";
+                        break;
+                    case "WI":
+                        $scope.state = "Wisconsin";
+                        break;
+                    case "WV":
+                        $scope.state = "West Virginia";
+                        break;
+                    case "WY":
+                        $scope.state = "Wyoming";
+                        break;
+                }
+            });
+            // res.error(function(data, status, headers, config) {
+            //     window.location.replace("/login.html");
+            // });
+        });
+
+        $scope.updateClient = function(){
+
+            var clientToUpdate = {
+                id: $scope.client.id,
+                name: $scope.name,
+                contactFirstName: $scope.fn,
+                contactLastName: $scope.ln,
+                contactPhoneNumber: $scope.phone,
+                contactEmail: $scope.cEmail,
+                address : {
+                    street : $scope.street,
+                    city : $scope.city,
+                    state : $scope.state,
+                    zipCode : $scope.zip
+                }
+            };
+
+            var res = $http.post('/rest/client/update', clientToUpdate, authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.updatedClient = data;
+            });
+            // res.error(function(data, status, headers, config) {
+            //     window.location.replace("/login.html");
+            // });
         };
 
         $scope.logout = function (){
@@ -310,7 +521,7 @@ angular.module("app", [])
 
         $scope.findInv = function(){
             var url1 = "/rest/invholder/find?type=" + $scope.itType;
-            var res1 = $http.get(url1);
+            var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.ihswt = data;
             });
@@ -320,11 +531,10 @@ angular.module("app", [])
         $scope.findQty = function(){
             $scope.qs = [];
             var url1 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.itFrom;
-            var res1 = $http.get(url1);
+            var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 var cibF = data;
                 $scope.cibCheck = data;
-                console.log($scope.itFrom === "New");
                 if($scope.itFrom === "New"){
                     for(j=0;j<30;j++){
                         $scope.qs.push(j+1);
@@ -468,11 +678,11 @@ angular.module("app", [])
 
     })
 
-    .controller('listJobs', function($scope, $http) {
+    .controller('listJobs', function($scope, $http, $filter) {
         $(document).ready(function(){
             var res = $http.get("/rest/job/list", authconfig);
             res.success(function(data, status, headers, config) {
-                $scope.jobList = data;
+                $scope.jobList = $filter('orderBy')(data, 'name');
             });
             res.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
@@ -683,7 +893,6 @@ angular.module("app", [])
             res1.success(function(data, status, headers, config) {
                 var cibF = data;
                 $scope.cibCheck = data;
-                console.log($scope.itFrom === "New");
                 if($scope.itFrom === "New"){
                     for(j=0;j<30;j++){
                         $scope.qs.push(j+1);
@@ -793,6 +1002,11 @@ angular.module("app", [])
         };
 
         $scope.enableWAddBtn = function (){
+            var url1 = "/rest/user/jobs?cuId=" + $scope.wUser;
+            var res1 = $http.get(url1, authconfig);
+            res1.success(function(data, status, headers, config) {
+                $scope.workerJobs = data;
+            });
             document.getElementById("wAddBtn").disabled = false;
         };
 
@@ -818,7 +1032,7 @@ angular.module("app", [])
         $scope.deleteTask = function(id){
             console.log("Delete Task:" + id);
             var url1 = "/rest/job/task/delete?ctId=" + id + "&cjId=" + $scope.job.id;
-            var res1 = $http.get(url1);
+            var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
             });
@@ -963,11 +1177,11 @@ angular.module("app", [])
         }
     })
 
-    .controller('listTypes', function($scope, $http) {
+    .controller('listTypes', function($scope, $http, $filter) {
         $(document).ready(function(){
             var res = $http.get("/rest/inventory/itemtype/list", authconfig);
             res.success(function(data, status, headers, config) {
-                $scope.itemTypes = data;
+                $scope.itemTypes = $filter('orderBy')(data, 'name');
             });
             res.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
@@ -1072,12 +1286,12 @@ angular.module("app", [])
 
     })
 
-    .controller('listUsers', function($scope, $http) {
+    .controller('listUsers', function($scope, $http, $filter) {
 
         $(document).ready(function(){
             var res = $http.get("/rest/user/list", authconfig);
             res.success(function(data, status, headers, config) {
-                $scope.userList = data;
+                $scope.userList = $filter('orderBy')(data, 'lastName');
             });
             res.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
@@ -1094,7 +1308,192 @@ angular.module("app", [])
         };
     })
 
+    // ==================
+    // Warehouses Controllers
+    // ==================
 
+
+    .controller('newWarehouse', function($scope, $http) {
+        $(document).ready(function(){
+            $scope.items = [];
+            $scope.st = false;
+
+            var res2 = $http.get("/rest/inventory/itemtype/list", authconfig);
+            res2.success(function(data, status, headers, config) {
+                $scope.cits = data;
+            });
+            res2.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+
+            var res3 = $http.get("/rest/invholder/list", authconfig);
+            res3.success(function(data, status, headers, config) {
+                $scope.ihs = data;
+            });
+            res3.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+
+        });
+
+        $scope.findInv = function(){
+            var url1 = "/rest/invholder/find?type=" + $scope.itType;
+            var res1 = $http.get(url1, authconfig);
+            res1.success(function(data, status, headers, config) {
+                $scope.ihswt = data;
+            });
+            document.getElementById("itFrom").disabled=false;
+        };
+
+        $scope.findQty = function(){
+            $scope.qs = [];
+            var url1 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.itFrom;
+            var res1 = $http.get(url1, authconfig);
+            res1.success(function(data, status, headers, config) {
+                var cibF = data;
+                $scope.cibCheck = data;
+                if($scope.itFrom === "New"){
+                    for(j=0;j<30;j++){
+                        $scope.qs.push(j+1);
+                    }
+                    $scope.maxQty = 100000;
+                }else {
+                    for (i = 0; i < cibF.quantity; i++) {
+                        $scope.qs.push(i + 1);
+                    }
+                    $scope.maxQty = cibF.quantity;
+
+                }
+                $scope.uom = cibF.bucketType.unitOfMeasurement;
+            });
+            res1.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+
+            document.getElementById("itQty").disabled=false;
+        };
+
+        $scope.enableStatus = function (){
+            document.getElementById("itStatus").disabled=false;
+        };
+
+        $scope.enableAddBtn = function (){
+            document.getElementById("itAddBtn").disabled=false;
+        };
+
+        $scope.incQty = function(it){
+            if($scope.items[it].qty < $scope.items[it].maxQty){
+                $scope.items[it].qty += 1
+            }
+        };
+
+        $scope.decQty = function(it){
+            if($scope.items[it].qty > 1){
+                $scope.items[it].qty -= 1
+            } else if($scope.items[it].qty === 1){
+                $scope.deleteItem(it);
+            }
+        };
+
+
+        $scope.addItem = function(){
+            $scope.st = true;
+            var exists = false;
+            var index = 0;
+            var itemToAdd = {
+                type : $scope.itType,
+                qty : parseInt($scope.itQty),
+                status : $scope.itStatus,
+                from : $scope.itFrom,
+                maxQty : $scope.maxQty,
+                uOfM : $scope.uom
+            };
+            console.log("Add: " + itemToAdd.type);
+            for(z=0;z<$scope.items.length;z++){
+                console.log(z);
+
+                if($scope.items[z].type === itemToAdd.type &&
+                    $scope.items[z].status === itemToAdd.status &&
+                    $scope.items[z].from === itemToAdd.from){
+                    exists = true;
+                    index = z;
+                }
+            }
+
+            if(exists){
+                $scope.items[index].qty = $scope.items[index].qty + itemToAdd.qty;
+            }else {
+                $scope.items.push(itemToAdd);
+                $scope.items[$scope.items.length - 1].index = $scope.items.length - 1;
+            }
+
+            $scope.itType = '';
+            $scope.itQty = '';
+            $scope.itStatus = '';
+            $scope.itFrom = '';
+            $scope.maxQty = '';
+            $scope.qs = '';
+            $scope.ihswt = '';
+            document.getElementById("itFrom").disabled=true;
+            document.getElementById("itQty").disabled=true;
+            document.getElementById("itStatus").disabled=true;
+            document.getElementById("itAddBtn").disabled=true;
+        };
+
+        $scope.deleteItem = function(ditem){
+            console.log("Delete Item");
+            var spot = ditem;
+            $scope.items.splice(spot, 1);
+            for(i=spot;i<$scope.items.length;i++){
+                $scope.items[i].index = i;
+            }
+        };
+
+        $scope.submitJob = function(){
+            console.log("Job Submitted!");
+
+            var newJob = {
+                name : $scope.name,
+                clId : $scope.client,
+                startDate : $scope.startDate,
+                status : $scope.status,
+                jobPrice : $scope.jobPrice,
+                address : {
+                    street : $scope.street,
+                    city : $scope.city,
+                    state : $scope.state,
+                    zipCode : $scope.zip
+                },
+                inventory : $scope.items
+            };
+
+            var res = $http.post('/rest/job/new', newJob, authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.jobNew = data;
+            });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+
+            $scope.name = '';
+            $scope.client = '';
+            $scope.startDate = '';
+            $scope.status = '';
+            $scope.jobPrice = '';
+            $scope.street = '';
+            $scope.city = '';
+            $scope.state = '';
+            $scope.zip = '';
+            $scope.items = [];
+            $scope.st = false;
+        }
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        }
+
+    })
 
     .service('dataService', function($http){
         this.inProgressJobs = function(callback){

@@ -85,7 +85,7 @@
         <div class="col-lg-3 col-lg-offset-2">
             <p><strong>Client:</strong> {{job.client.name}}</p>
             <p><strong>Start Date:</strong> {{job.startDate}}</p>
-            <p><strong>End Date:</strong> {{job.endDate}}</p>
+            <p><strong>End Date:</strong> {{job.endDate}} <span ng-if="job.endDate === null"> - </span></p>
             <p><strong>Status:</strong> {{job.status}}</p>
         </div>
         <div class="col-lg-3">
@@ -181,6 +181,24 @@
         <div class="form-group col-lg-2">
             <button ng-click="addWorker()" type="button" class="btn btn-success" id="wAddBtn" disabled="true">Add</button>
         </div>
+    </div>
+    <div class="col-lg-8 col-lg-offset-2" ng-if="workerJobs.length > 0">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Job Name</th>
+                <th>Client</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="j in workerJobs">
+                <td>{{j.name}}</td>
+                <td>{{j.client.name}}</td>
+                <td>{{j.status}}</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <div class="row" ng-show="tForm">
         <div class="form-group col-lg-3 col-lg-offset-1">

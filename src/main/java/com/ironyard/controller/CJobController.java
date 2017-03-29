@@ -307,9 +307,12 @@ public class CJobController {
     public CJob updateStatus(@RequestParam Long cjId){
         CJob cj = cJobRepo.findOne(cjId);
         String cjStatus = cj.getStatus();
+        Calendar c = Calendar.getInstance();
+        Date now = c.getTime();
 
         if(cjStatus.equals("In Progress")){
             cj.setStatus("Completed");
+            cj.setEndDate(now);
         }
         if(cjStatus.equals("Pending Start")){
             cj.setStatus("In Progress");

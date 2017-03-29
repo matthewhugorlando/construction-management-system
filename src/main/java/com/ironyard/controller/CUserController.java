@@ -1,7 +1,9 @@
 package com.ironyard.controller;
 
+import com.ironyard.data.CJob;
 import com.ironyard.data.CUser;
 import com.ironyard.dto.CUserDTO;
+import com.ironyard.repo.CJobRepo;
 import com.ironyard.repo.CUserRepo;
 import com.ironyard.security.TokenMaster;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping(path = "/rest/user")
 public class CUserController {
+
+    @Autowired
+    CJobRepo cJobRepo;
 
     @Autowired
     CUserRepo cUserRepo;
@@ -57,6 +62,11 @@ public class CUserController {
         }
         t.setToken(tok);
         return t;
+    }
+
+    @RequestMapping(path = "/jobs", method = RequestMethod.GET)
+    public Iterable<CJob> findJobs(@RequestParam Long cuId){
+        return cJobRepo.findByStatusAndWorkedOnById("In Progress", cuId);
     }
 
 }
