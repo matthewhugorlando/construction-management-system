@@ -699,7 +699,7 @@ angular.module("app", [])
         }
     })
 
-    .controller('indvJob', function($scope, $http){
+    .controller('indvJob', function($scope, $http, $filter){
         $(document).ready(function(){
             console.log("Job page!" + localStorage.getItem(jobId));
             $scope.iForm = false;
@@ -708,6 +708,7 @@ angular.module("app", [])
             var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
+                $scope.totalRevenue = data.jobPrice.toFixed(2);
             });
             res1.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
@@ -728,7 +729,7 @@ angular.module("app", [])
                 for(i=0;i<$scope.jobInv.length;i++){
                     tc += $scope.jobInv[i].totalCost;
                 }
-                $scope.jobTotalCost = tc;
+                $scope.jobTotalCost = tc.toFixed(2);
                 $scope.filterInventory("All");
             });
             res3.error(function(data, status, headers, config) {
@@ -755,12 +756,17 @@ angular.module("app", [])
 
         $scope.filterInventory = function(filter){
             if(filter === "All"){
-                $scope.invToShow = $scope.jobInv;
+                for(i=0;i<$scope.jobInv.length;i++){
+                    $scope.jobInv[i].showCost = $scope.jobInv[i].totalCost.toFixed(2);
+                }
+                $scope.invToShow = $filter('orderBy')($scope.jobInv, ['name', 'status']);
             }else{
                 $scope.invToShow = [];
                 for(i=0;i<$scope.jobInv.length;i++){
+                    $scope.jobInv[i].showCost = $scope.jobInv[i].totalCost.toFixed(2);
                     if($scope.jobInv[i].status === filter){
                         $scope.invToShow.push($scope.jobInv[i]);
+                        $scope.invToShow = $filter('orderBy')($scope.invToShow, ['name', 'status'])
                     }
                 }
             }
@@ -786,6 +792,7 @@ angular.module("app", [])
             $scope.tDesc = '';
             $scope.wUser = '';
             $scope.currLocInv = [];
+            $scope.workerJobs = [];
             document.getElementById("itFrom").disabled=true;
             document.getElementById("itQty").disabled=true;
             document.getElementById("itStatus").disabled=true;
@@ -814,6 +821,7 @@ angular.module("app", [])
             $scope.tDesc = '';
             $scope.wUser = '';
             $scope.currLocInv = [];
+            $scope.workerJobs = [];
             document.getElementById("tAddBtn").disabled = true;
             document.getElementById("wAddBtn").disabled = true;
             document.getElementById("itFrom").disabled=true;
@@ -843,6 +851,7 @@ angular.module("app", [])
             $scope.wUser = '';
             $scope.tForm = false;
             $scope.currLocInv = [];
+            $scope.workerJobs = [];
             document.getElementById("tAddBtn").disabled = true;
             document.getElementById("wAddBtn").disabled = true;
             document.getElementById("itFrom").disabled=true;
@@ -943,7 +952,7 @@ angular.module("app", [])
                     var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
                     var res3 = $http.get(url3, authconfig);
                     res3.success(function(data, status, headers, config) {
-                        $scope.jobInv = data;
+                        $scope.jobInv = $filter('orderBy')(data, ['name', 'status']);
                         var tc = 0;
                         for(i=0;i<$scope.jobInv.length;i++){
                             tc += $scope.jobInv[i].totalCost;
@@ -1018,6 +1027,7 @@ angular.module("app", [])
             });
             $scope.wUser = "";
             $scope.wForm = false;
+            $scope.workerJobs = [];
         }
 
         $scope.markAsComplete = function(id){
@@ -1045,12 +1055,13 @@ angular.module("app", [])
                 var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
                 var res3 = $http.get(url3, authconfig);
                 res3.success(function(data, status, headers, config) {
-                    $scope.jobInv = data;
+                    $scope.jobInv = $filter('orderBy')(data, ['name', 'status']);
                     var tc = 0;
                     for(i=0;i<$scope.jobInv.length;i++){
                         tc += $scope.jobInv[i].totalCost;
                     }
                     $scope.jobTotalCost = tc;
+                    $scope.filterInventory($scope.invFilter);
                 });
                 res3.error(function(data, status, headers, config) {
                     window.location.replace("/login.html");
@@ -1528,7 +1539,7 @@ angular.module("app", [])
         }
     })
 
-    .controller('indvWarehouse', function($scope, $http){
+    .controller('indvWarehouse', function($scope, $http, $filter){
         $(document).ready(function(){
             console.log("Warehouse Page: " + window.localStorage.getItem("warehouseId"));
             $scope.iForm = false;
@@ -1553,23 +1564,23 @@ angular.module("app", [])
             var res3 = $http.get(url3, authconfig);
             res3.success(function(data, status, headers, config) {
                 $scope.wInv = data;
-                console.log("Finding the inventory");
-                $scope.filterInventory("All");
+                $scope.filterInv("All");
             });
             res3.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
             });
         });
 
-        $scope.filterInventory = function(filter){
+        $scope.filterInv = function(filter){
             console.log("Filter Inventory called");
             if(filter === "All"){
-                $scope.invToShow = $scope.wInv;
+                $scope.invToShow = $filter('orderBy')($scope.wInv, ['name', 'status']);
             }else{
                 $scope.invToShow = [];
                 for(i=0;i<$scope.wInv.length;i++){
                     if($scope.wInv[i].status === filter){
                         $scope.invToShow.push($scope.wInv[i]);
+                        $scope.invToShow = $filter('orderBy')($scope.invToShow, ['name', 'status'])
                     }
                 }
             }
@@ -1593,8 +1604,6 @@ angular.module("app", [])
             document.getElementById("itQty").disabled=true;
             document.getElementById("itStatus").disabled=true;
             document.getElementById("itAddBtn").disabled=true;
-            document.getElementById("tAddBtn").disabled = true;
-            document.getElementById("wAddBtn").disabled = true;
         };
 
         $scope.findInv = function(){
@@ -1603,7 +1612,7 @@ angular.module("app", [])
             res1.success(function(data, status, headers, config) {
                 var invhol = data;
                 for(i=0;i<invhol.length;i++){
-                    if(invhol[i].id === $scope.job.id){
+                    if(invhol[i].id === $scope.warehouse.id){
                         invhol.splice(i, 1);
                     }
                 }
@@ -1612,7 +1621,7 @@ angular.module("app", [])
             res1.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
             });
-            var url2 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.job.name;
+            var url2 = "/rest/inventory/find?type=" + $scope.itType + "&from=" + $scope.warehouse.name;
             var res2 = $http.get(url2, authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.currItem = data;
@@ -1620,7 +1629,7 @@ angular.module("app", [])
             res2.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
             });
-            var url3 = "/rest/inventory/type/loc/find?type=" + $scope.itType + "&locId=" + $scope.job.id;
+            var url3 = "/rest/inventory/type/loc/find?type=" + $scope.itType + "&locId=" + $scope.warehouse.id;
             var res3 = $http.get(url3, authconfig);
             res3.success(function(data, status, headers, config) {
                 $scope.currLocInv = data;
@@ -1681,21 +1690,16 @@ angular.module("app", [])
 
             var res1 = $http.post('/rest/job/inventory/new?cjId=' + window.localStorage.getItem("warehouseId"), newItem, authconfig);
             res1.success(function(data, status, headers, config) {
-                $scope.jobNew = data;
-                var url2 = "/rest/job/select?id=" + window.localStorage.getItem(jobId);
+                $scope.warehouseNew = data;
+                var url2 = "/rest/warehouse/select?id=" + window.localStorage.getItem("warehouseId");
                 var res2 = $http.get(url2, authconfig);
                 res2.success(function(data, status, headers, config) {
-                    $scope.job = data;
-                    var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem(jobId);
+                    $scope.warehouse = data;
+                    var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem("warehouseId");
                     var res3 = $http.get(url3, authconfig);
                     res3.success(function(data, status, headers, config) {
-                        $scope.jobInv = data;
-                        var tc = 0;
-                        for(i=0;i<$scope.jobInv.length;i++){
-                            tc += $scope.jobInv[i].totalCost;
-                        }
-                        $scope.jobTotalCost = tc;
-                        $scope.filterInventory($scope.invFilter);
+                        $scope.wInv = $filter('orderBy')(data, ['name', 'status']);
+                        $scope.filterInv($scope.invFilter);
                     });
                 });
             });
@@ -1720,29 +1724,17 @@ angular.module("app", [])
         $scope.updateItemStatus = function(id){
             var res = $http.get('/rest/inventory/item/update?id=' + id, authconfig);
             res.success(function(data, status, headers, config) {
-                $scope.job = data;
+                $scope.warehouse = data;
                 var url3 = "/rest/inventory/loc/find?locId=" + window.localStorage.getItem("warehouseId");
                 var res3 = $http.get(url3, authconfig);
                 res3.success(function(data, status, headers, config) {
-                    $scope.wInv = data;
+                    $scope.wInv = $filter('orderBy')(data, ['name', 'status']);
+                    $scope.filterInv($scope.invFilter);
                 });
                 res3.error(function(data, status, headers, config) {
                     window.location.replace("/login.html");
                 });
             });
-        };
-
-        $scope.filterInventory = function(filter){
-            if(filter === "All"){
-                $scope.invToShow = $scope.jobInv;
-            }else{
-                $scope.invToShow = [];
-                for(i=0;i<$scope.wInv.length;i++){
-                    if($scope.wInv[i].status === filter){
-                        $scope.invToShow.push($scope.jobInv[i]);
-                    }
-                }
-            }
         };
 
         $scope.logout = function (){

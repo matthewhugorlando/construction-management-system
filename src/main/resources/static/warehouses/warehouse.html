@@ -80,16 +80,7 @@
 <div class="container">
     <div class="row text-center">
         <h2><strong>Warehouse:</strong> {{warehouse.name}}</h2>
-    </div>
-    <div class="row">
-        <div class="col-lg-5 col-lg-offset-2">
-            <p><strong>Street Address:</strong> {{warehouse.location.street}}</p>
-            <p><strong>City:</strong> {{warehouse.location.city}}</p>
-        </div>
-        <div class="col-lg-5">
-            <p><strong>State:</strong> {{warehouse.location.state}}</p>
-            <p><strong>Zip Code:</strong> {{warehouse.location.zipCode}}</p>
-        </div>
+        <p><strong>Location: </strong> {{warehouse.location.street}}, {{warehouse.location.city}}, {{warehouse.location.state}} {{warehouse.location.zipCode}}</p>
     </div>
     <br>
     <div class="row">
@@ -123,7 +114,6 @@
                 <option disabled selected value>Status</option>
                 <option>Pending Delivery</option>
                 <option>On Site</option>
-                <option>Used</option>
             </select>
         </div>
         <div class="form-group col-lg-3">
@@ -165,11 +155,10 @@
                             <th>Quantity</th>
                             <th>Cost</th>
                             <th>
-                                <select ng-model="invFilter" ng-change="filterInventory(invFilter)" class="form-control" id="invFilter">
+                                <select ng-model="invFilter" ng-change="filterInv(invFilter)" class="form-control" id="invFilter">
                                     <option>All</option>
                                     <option>Pending Delivery</option>
                                     <option>On Site</option>
-                                    <option>Used</option>
                                 </select>
                             </th>
                         </tr>

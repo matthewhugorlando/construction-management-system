@@ -96,7 +96,7 @@
 
         </div>
         <div class="col-lg-3">
-            <p><strong>Total Revenue:</strong> ${{job.jobPrice}}</p>
+            <p><strong>Total Revenue:</strong> ${{totalRevenue}}</p>
             <p><strong>Total Cost:</strong> ${{jobTotalCost}}</p>
             <p><strong>Tasks Left:</strong></p>
         </div>
@@ -307,7 +307,7 @@
                                     <th scope="row">{{i.bucketType.name}}</th>
                                     <td>{{i.status}}</td>
                                     <td>{{i.quantity}}</td>
-                                    <td>${{i.totalCost}}</td>
+                                    <td>${{i.showCost}}</td>
                                     <td>
                                         <button ng-if="i.status === 'Pending Delivery'" ng-click="updateItemStatus(i.id)" type="button" class="btn btn-success">Delivered</button>
                                         <button ng-if="i.status === 'On Site'" ng-click="updateItemStatus(i.id)" type="button" class="btn btn-warning">Used</button>
