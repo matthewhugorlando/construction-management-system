@@ -59,7 +59,7 @@
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome Matt!</a></li>
+            <li><a href="/users/myprofile.html"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
             <li><a href="" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
         </ul>
     </div>
@@ -146,7 +146,7 @@
                                         <th scope="row">{{i.bucketType.name}}</th>
                                         <td>{{i.status}}</td>
                                         <td>{{i.quantity}}</td>
-                                        <td>${{i.totalCost}}</td>
+                                        <td>${{i.showCost}}</td>
                                     </tr>
                                     </tbody>
                                 </table>

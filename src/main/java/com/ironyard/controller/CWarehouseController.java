@@ -106,11 +106,22 @@ public class CWarehouseController {
         return cWarehouseRepo.findAll();
     }
 
+    @RequestMapping(path = "/list/active", method = RequestMethod.GET)
+    public Iterable<CWarehouse> listActiveWarehouses(){
+        return cWarehouseRepo.findByActive(true);
+    }
+
     @RequestMapping(path = "/select", method = RequestMethod.GET)
     public CWarehouse findWarehouse(@RequestParam Long id){
         return cWarehouseRepo.findOne(id);
     }
 
-
+    @RequestMapping(path = "/toggle/active", method = RequestMethod.GET)
+    public CWarehouse toggleWarehouseActive(@RequestParam Long id){
+        CWarehouse cw = cWarehouseRepo.findOne(id);
+        cw.setActive(!cw.isActive());
+        cWarehouseRepo.save(cw);
+        return cw;
+    }
 
 }

@@ -59,13 +59,14 @@
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome Matt!</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span>My Profile</a></li>
             <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
         </ul>
     </div>
 </nav>
 
 <div class="container">
+    <div ng-show="addedClient" class="alert alert-success" role="alert"><strong>Success!</strong> New client {{clientNew.name}} added.</div>
     <h2>New Client</h2>
     <form>
         <div class="form-group col-lg-6">

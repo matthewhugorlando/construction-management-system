@@ -55,6 +55,10 @@ angular.module("app", [])
                 var res2 = $http.get(url2, authconfig);
                 res2.success(function(data, status, headers, config) {
                     $scope.invOfJIP = data;
+                    for(i=0;i<$scope.invOfJIP.length;i++){
+                        $scope.invOfJIP[i].showCost = $scope.invOfJIP[i].totalCost.toFixed(2);
+
+                    }
                 });
                 for(i=0;i<$scope.jobsInProgress[$scope.jobTracker].tasks.length;i++){
                     if($scope.jobsInProgress[$scope.jobTracker].tasks[i].completed === false){
@@ -74,6 +78,9 @@ angular.module("app", [])
             var res2 = $http.get(url2, authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.invOfJIP = data;
+                for(i=0;i<$scope.invOfJIP.length;i++){
+                    $scope.invOfJIP[i].showCost = $scope.invOfJIP[i].totalCost.toFixed(2);
+                }
             });
             res2.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
@@ -93,6 +100,10 @@ angular.module("app", [])
             var res2 = $http.get(url2, authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.invOfJIP = data;
+                for(i=0;i<$scope.invOfJIP.length;i++){
+                    $scope.invOfJIP[i].showCost = $scope.invOfJIP[i].totalCost.toFixed(2);
+
+                }
             });
             res2.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
@@ -127,6 +138,7 @@ angular.module("app", [])
 
     .controller('newClient', function($scope, $http) {
         $(document).ready(function(){
+            $scope.addedClient = false;
             console.log("New Client Controller checking in!");
         });
 
@@ -167,6 +179,7 @@ angular.module("app", [])
             $scope.city = '';
             $scope.state = '';
             $scope.zip = '';
+            $scope.addedClient = true;
         };
 
         $scope.logout = function (){
@@ -634,6 +647,8 @@ angular.module("app", [])
 
         $scope.submitJob = function(){
             console.log("Job Submitted!");
+            $scope.addedJob = false;
+
 
             var newJob = {
                 name : $scope.name,
@@ -653,6 +668,7 @@ angular.module("app", [])
             var res = $http.post('/rest/job/new', newJob, authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.jobNew = data;
+                $scope.addedJob = true;
             });
             res.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
@@ -704,10 +720,16 @@ angular.module("app", [])
             console.log("Job page!" + localStorage.getItem(jobId));
             $scope.iForm = false;
             $scope.invFilter = "All";
+            $scope.tasksLeft = 0;
             var url1 = "/rest/job/select?id=" + window.localStorage.getItem(jobId);
             var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
+                for(i=0;i<data.tasks.length;i++){
+                    if(!data.tasks[i].completed){
+                        $scope.tasksLeft += 1;
+                    }
+                }
                 $scope.totalRevenue = data.jobPrice.toFixed(2);
             });
             res1.error(function(data, status, headers, config) {
@@ -957,7 +979,7 @@ angular.module("app", [])
                         for(i=0;i<$scope.jobInv.length;i++){
                             tc += $scope.jobInv[i].totalCost;
                         }
-                        $scope.jobTotalCost = tc;
+                        $scope.jobTotalCost = tc.toFixed(2);
                         $scope.filterInventory($scope.invFilter);
                     });
                 });
@@ -1000,6 +1022,11 @@ angular.module("app", [])
                 var res2 = $http.get(url2, authconfig);
                 res2.success(function(data, status, headers, config) {
                     $scope.job = data;
+                    for(i=0;i<data.tasks.length;i++){
+                        if(!data.tasks[i].completed){
+                            $scope.tasksLeft += 1;
+                        }
+                    }
                 });
             });
             res1.error(function(data, status, headers, config) {
@@ -1036,6 +1063,11 @@ angular.module("app", [])
             var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
+                for(i=0;i<data.tasks.length;i++){
+                    if(!data.tasks[i].completed){
+                        $scope.tasksLeft += 1;
+                    }
+                }
             });
         };
 
@@ -1045,6 +1077,11 @@ angular.module("app", [])
             var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
+                for(i=0;i<data.tasks.length;i++){
+                    if(!data.tasks[i].completed){
+                        $scope.tasksLeft += 1;
+                    }
+                }
             });
         };
 
@@ -1060,7 +1097,7 @@ angular.module("app", [])
                     for(i=0;i<$scope.jobInv.length;i++){
                         tc += $scope.jobInv[i].totalCost;
                     }
-                    $scope.jobTotalCost = tc;
+                    $scope.jobTotalCost = tc.toFixed(2);
                     $scope.filterInventory($scope.invFilter);
                 });
                 res3.error(function(data, status, headers, config) {
@@ -1251,7 +1288,7 @@ angular.module("app", [])
     })
 
     // ==================
-    // User Controllers
+    // Users Controllers
     // ==================
 
     .controller('newUser', function($scope, $http) {
@@ -1323,6 +1360,37 @@ angular.module("app", [])
             var res = $http.get("/rest/user/list", authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.userList = $filter('orderBy')(data, 'lastName');
+            });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+        });
+
+        $scope.selectUser = function(id){
+            window.localStorage.setItem(userId, id);
+        };
+
+        $scope.logout = function (){
+            window.localStorage.removeItem("token");
+            window.location.replace("/login.html");
+        };
+    })
+
+    .controller('myProfile', function($scope, $http, $filter) {
+
+        $(document).ready(function(){
+            var res = $http.get("/rest/user/me", authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.uMe = data;
+                $scope.firstName = data.firstName;
+                $scope.lastName = data.lastName;
+                $scope.username = data.username;
+                $scope.street = data.currentAddress.street;
+                $scope.city = data.currentAddress.city;
+                $scope.zip = data.currentAddress.zipCode;
+                $scope.state = data.currentAddress.state;
+                $scope.email = data.email;
+                $scope.phoneNumber = data.phoneNumber;
             });
             res.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
@@ -1570,6 +1638,16 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
         });
+
+        $scope.toggle = function() {
+            var res = $http.get("/rest/warehouse/toggle/active?id=" + window.localStorage.getItem("warehouseId"), authconfig);
+            res.success(function (data, status, headers, config) {
+                $scope.warehouse = data;
+            });
+            res.error(function (data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+        }
 
         $scope.filterInv = function(filter){
             console.log("Filter Inventory called");

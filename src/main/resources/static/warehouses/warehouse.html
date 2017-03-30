@@ -71,7 +71,7 @@
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome Matt!</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span>My Profile</a></li>
             <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
         </ul>
     </div>
@@ -86,6 +86,8 @@
     <div class="row">
         <div class="col-lg-12 text-center">
             <button ng-click="showIForm()" type="button" class="btn btn-default">New Inventory</button>
+            <button ng-show="warehouse.active === false" ng-click="toggle()" type="button" class="btn btn-success">Activate</button>
+            <button ng-show="warehouse.active === true" ng-click="toggle()" type="button" class="btn btn-danger">Deactivate</button>
         </div>
     </div>
     <br>

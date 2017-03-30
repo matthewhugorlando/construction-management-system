@@ -71,7 +71,7 @@
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome Matt!</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span>My Profile</a></li>
             <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
         </ul>
     </div>
@@ -98,7 +98,8 @@
         <div class="col-lg-3">
             <p><strong>Total Revenue:</strong> ${{totalRevenue}}</p>
             <p><strong>Total Cost:</strong> ${{jobTotalCost}}</p>
-            <p><strong>Tasks Left:</strong></p>
+            <p><strong>Tasks Left:</strong> {{tasksLeft}}</p>
+            <p><strong>Number of Workers:</strong> {{job.workedOnBy.length}}</p>
         </div>
         <div class="col-lg-1">
 
@@ -106,8 +107,7 @@
     </div>
     <br>
     <div class="row text-center">
-        <button ng-click="editBasic()" type="button" class="btn btn-primary">Edit Location</button>
-        <button ng-if="job.status === 'In Progress'" ng-click="updateJobStatus()" type="button" class="btn btn-success">Complete Project</button>
+        <button ng-if="job.status === 'In Progress'" ng-click="updateJobStatus()" type="button" class="btn btn-success">Project Completed</button>
         <button ng-if="job.status === 'Pending Start'" ng-click="updateJobStatus()" type="button" class="btn btn-warning">Start Project</button>
     </div>
     <br>
@@ -261,19 +261,19 @@
                     </div>
                     <p class="text-center" ng-show="job.tasks.length === 0">There are no tasks for this job.</p>
                 </div>
-                <div class="panel-footer text-center">
-                    <nav aria-label="...">
-                        <ul class="pagination">
-                            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                            <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-                        </ul>
-                    </nav>
-                </div>
+                <!--<div class="panel-footer text-center">-->
+                    <!--<nav aria-label="...">-->
+                        <!--<ul class="pagination">-->
+                            <!--<li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>-->
+                            <!--<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>-->
+                            <!--<li><a href="#">2</a></li>-->
+                            <!--<li><a href="#">3</a></li>-->
+                            <!--<li><a href="#">4</a></li>-->
+                            <!--<li><a href="#">5</a></li>-->
+                            <!--<li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>-->
+                        <!--</ul>-->
+                    <!--</nav>-->
+                <!--</div>-->
             </div>
         </div>
         <div class="col-lg-1">

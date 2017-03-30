@@ -30,7 +30,7 @@ public class CUserController {
                     consumes = MediaType.ALL_VALUE)
     public CUser addUser(@RequestBody CUserDTO cuDTO){
         System.out.println("Called addUser()");
-        CUser cu = new CUser(cuDTO.getFirstName(), cuDTO.getLastName(), cuDTO.getUsername(), cuDTO.getPassword(), cuDTO.getEmail(), cuDTO.getPhoneNumber(), cuDTO.getPermissionLevel(), true);
+        CUser cu = new CUser(cuDTO.getFirstName(), cuDTO.getLastName(), cuDTO.getUsername(), cuDTO.getPassword(), cuDTO.getEmail(), cuDTO.getPhoneNumber(), cuDTO.getPermissionLevel(), true, cuDTO.getCurrentAddress());
         cUserRepo.save(cu);
         return cu;
     }
@@ -67,6 +67,12 @@ public class CUserController {
     @RequestMapping(path = "/jobs", method = RequestMethod.GET)
     public Iterable<CJob> findJobs(@RequestParam Long cuId){
         return cJobRepo.findByStatusAndWorkedOnById("In Progress", cuId);
+    }
+
+    @RequestMapping(path = "/me", method = RequestMethod.GET)
+    public CUser findMe(@RequestHeader(value="x-authorization-key") String token){
+        TokenMaster tm = new TokenMaster();
+        return cUserRepo.findOne(tm.getUserIdFromToken(token));
     }
 
 }

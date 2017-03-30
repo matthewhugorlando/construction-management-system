@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
-<body>
+<body ng-controller="listUsers">
 
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
@@ -59,15 +59,37 @@
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome Matt!</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span>My Profile</a></li>
             <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
         </ul>
     </div>
 </nav>
 
 <div class="container">
+    <div class="row text-center">
+        <h2>Item List</h2>
+    </div>
     <div class="row">
-
+        <table class="table">
+            <thead style="font-size: 1.5em;">
+            <tr>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Address</th>
+                <th>Phone #</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="u in userList">
+                <th scope="row">{{u.firstName}} {{u.lastName}}</th>
+                <td>{{u.username}}</td>
+                <td>{{u.currentAddress.street}}, {{u.currentAddress.city}}, {{u.currentAddress.state}} {{u.currentAddress.zipCode}}</td>
+                <td>{{u.phoneNumber}}</td>
+                <td>{{u.email}}</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

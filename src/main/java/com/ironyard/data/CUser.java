@@ -25,7 +25,7 @@ public class CUser {
     private boolean active;
     private String file;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
     private CAddress currentAddress;
 
 //    @ManyToMany
