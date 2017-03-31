@@ -75,4 +75,20 @@ public class CUserController {
         return cUserRepo.findOne(tm.getUserIdFromToken(token));
     }
 
+    @RequestMapping(path = "/update",
+            method = RequestMethod.POST,
+            consumes = MediaType.ALL_VALUE)
+    public CUser updateUser(@RequestBody CUserDTO cuDTO){
+        CUser cu = cUserRepo.findOne(cuDTO.getId());
+        cu.setFirstName(cuDTO.getFirstName());
+        cu.setLastName(cuDTO.getLastName());
+        cu.setUsername(cuDTO.getUsername());
+        cu.setPassword(cuDTO.getPassword());
+        cu.setPhoneNumber(cuDTO.getPhoneNumber());
+        cu.setEmail(cuDTO.getEmail());
+        cu.setCurrentAddress(cuDTO.getCurrentAddress());
+        cUserRepo.save(cu);
+        return cu;
+    }
+
 }

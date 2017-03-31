@@ -59,7 +59,7 @@
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span>My Profile</a></li>
+            <li><a href="../users/myprofile.html"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
             <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
         </ul>
     </div>
@@ -67,7 +67,7 @@
 
 <div class="container">
     <div class="row text-center">
-        <h2>Item List</h2>
+        <h2>User List</h2>
     </div>
     <div class="row">
         <table class="table">
@@ -82,7 +82,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="u in userList">
-                <th scope="row">{{u.firstName}} {{u.lastName}}</th>
+                <th scope="row">{{u.lastName}}, {{u.firstName}}</th>
                 <td>{{u.username}}</td>
                 <td>{{u.currentAddress.street}}, {{u.currentAddress.city}}, {{u.currentAddress.state}} {{u.currentAddress.zipCode}}</td>
                 <td>{{u.phoneNumber}}</td>

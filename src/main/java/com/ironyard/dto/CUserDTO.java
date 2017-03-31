@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Created by matthewhug on 3/21/17.
  */
 public class CUserDTO {
+    private long id;
     private String firstName;
     private String lastName;
     private String username;
@@ -17,6 +18,14 @@ public class CUserDTO {
     private boolean active;
     private MultipartFile file;
     private CAddress currentAddress;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;

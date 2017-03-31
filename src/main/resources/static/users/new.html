@@ -59,26 +59,15 @@
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span>My Profile</a></li>
+            <li><a href="../users/myprofile.html"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
             <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
         </ul>
     </div>
 </nav>
 
 <div class="container">
-    <h2>New Client</h2>
-    <!--<ol class="breadcrumb">-->
-    <!--<li class="breadcrumb-item active">Location</li>-->
-    <!--</ol>-->
-    <!--<ol class="breadcrumb">-->
-    <!--<li class="breadcrumb-item"><a href="#">Home</a></li>-->
-    <!--<li class="breadcrumb-item active">Library</li>-->
-    <!--</ol>-->
-    <!--<ol class="breadcrumb">-->
-    <!--<li class="breadcrumb-item"><a href="#">Home</a></li>-->
-    <!--<li class="breadcrumb-item"><a href="#">Library</a></li>-->
-    <!--<li class="breadcrumb-item active">Data</li>-->
-    <!--</ol>-->
+    <div ng-show="addedUser" class="alert alert-success" role="alert"><strong>Success!</strong> New user {{userNew.firstName}} {{userNew.lastName}} added.</div>
+    <h2>New User</h2>
     <form>
         <div class="form-group col-lg-6">
             <label for="firstName">First Name</label>

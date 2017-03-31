@@ -725,11 +725,13 @@ angular.module("app", [])
             var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
+                var tl = 0;
                 for(i=0;i<data.tasks.length;i++){
                     if(!data.tasks[i].completed){
-                        $scope.tasksLeft += 1;
+                        tl += 1;
                     }
                 }
+                $scope.tasksLeft = tl;
                 $scope.totalRevenue = data.jobPrice.toFixed(2);
             });
             res1.error(function(data, status, headers, config) {
@@ -1022,11 +1024,13 @@ angular.module("app", [])
                 var res2 = $http.get(url2, authconfig);
                 res2.success(function(data, status, headers, config) {
                     $scope.job = data;
+                    var tl = 0;
                     for(i=0;i<data.tasks.length;i++){
                         if(!data.tasks[i].completed){
-                            $scope.tasksLeft += 1;
+                            tl += 1;
                         }
                     }
+                    $scope.tasksLeft = tl;
                 });
             });
             res1.error(function(data, status, headers, config) {
@@ -1055,7 +1059,7 @@ angular.module("app", [])
             $scope.wUser = "";
             $scope.wForm = false;
             $scope.workerJobs = [];
-        }
+        };
 
         $scope.markAsComplete = function(id){
             console.log("Marked task " + id + " as complete");
@@ -1063,11 +1067,13 @@ angular.module("app", [])
             var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
+                var tl = 0;
                 for(i=0;i<data.tasks.length;i++){
                     if(!data.tasks[i].completed){
-                        $scope.tasksLeft += 1;
+                        tl += 1;
                     }
                 }
+                $scope.tasksLeft = tl;
             });
         };
 
@@ -1077,11 +1083,13 @@ angular.module("app", [])
             var res1 = $http.get(url1, authconfig);
             res1.success(function(data, status, headers, config) {
                 $scope.job = data;
+                var tl = 0;
                 for(i=0;i<data.tasks.length;i++){
                     if(!data.tasks[i].completed){
-                        $scope.tasksLeft += 1;
+                        tl += 1;
                     }
                 }
+                $scope.tasksLeft = tl;
             });
         };
 
@@ -1166,17 +1174,17 @@ angular.module("app", [])
 
     })
 
-    .controller('listItems', function($scope, $http) {
+    .controller('listItems', function($scope, $http, $filter) {
         $(document).ready(function(){
 
             var res1 = $http.get("/rest/inventory/list", authconfig);
             res1.success(function(data, status, headers, config) {
-                $scope.itemList = data;
+                $scope.itemList = $filter('orderBy')(data, 'bucketType.name');;
             });
             res1.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
             });
-            var res2 = $http.get("/rest/job/list", authconfig);
+            var res2 = $http.get("/rest/invholder/list", authconfig);
             res2.success(function(data, status, headers, config) {
                 $scope.jobList = data;
                 var jNames = [];
@@ -1294,6 +1302,7 @@ angular.module("app", [])
     .controller('newUser', function($scope, $http) {
         $(document).ready(function(){
             console.log("New User Controller checking in!");
+            $scope.addedUser = false;
         });
 
         $scope.readFile = function(){
@@ -1315,7 +1324,6 @@ angular.module("app", [])
                 lastName: $scope.lastName,
                 username: $scope.username,
                 password: $scope.password,
-                contactEmail: $scope.cEmail,
                 phoneNumber: $scope.phoneNumber,
                 email: $scope.email,
                 currentAddress : {
@@ -1329,20 +1337,22 @@ angular.module("app", [])
             var res = $http.post('/rest/user/new', newUser, authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.userNew = data;
+                $scope.addedUser = true;
             });
             res.error(function(data, status, headers, config) {
                 window.location.replace("/login.html");
             });
 
-            // $scope.name = '';
-            // $scope.fn = '';
-            // $scope.ln = '';
-            // $scope.phone = '';
-            // $scope.cEmail = '';
-            // $scope.street = '';
-            // $scope.city = '';
-            // $scope.state = '';
-            // $scope.zip = '';
+            $scope.firstName = '';
+            $scope.lastName = '';
+            $scope.username = '';
+            $scope.password = '';
+            $scope.email = '';
+            $scope.phoneNumber = '';
+            $scope.street = '';
+            $scope.city = '';
+            $scope.state = '';
+            $scope.zip = '';
 
 
         };
@@ -1379,12 +1389,15 @@ angular.module("app", [])
     .controller('myProfile', function($scope, $http, $filter) {
 
         $(document).ready(function(){
+            $scope.updatedUser = false;
             var res = $http.get("/rest/user/me", authconfig);
             res.success(function(data, status, headers, config) {
                 $scope.uMe = data;
+                $scope.id = data.id;
                 $scope.firstName = data.firstName;
                 $scope.lastName = data.lastName;
                 $scope.username = data.username;
+                $scope.password = '';
                 $scope.street = data.currentAddress.street;
                 $scope.city = data.currentAddress.city;
                 $scope.zip = data.currentAddress.zipCode;
@@ -1396,6 +1409,64 @@ angular.module("app", [])
                 window.location.replace("/login.html");
             });
         });
+
+        $scope.submitUser = function(){
+            console.log("User Submitted!");
+
+            if($scope.password = '');
+            {
+                $scope.password = $scope.uMe.password;
+            }
+
+            var newUser = {
+                id: $scope.id,
+                firstName: $scope.firstName,
+                lastName: $scope.lastName,
+                username: $scope.username,
+                password: $scope.password,
+                phoneNumber: $scope.phoneNumber,
+                email: $scope.email,
+                currentAddress : {
+                    street : $scope.street,
+                    city : $scope.city,
+                    state : $scope.state,
+                    zipCode : $scope.zip
+                }
+            };
+
+            var res = $http.post('/rest/user/update', newUser, authconfig);
+            res.success(function(data, status, headers, config) {
+                $scope.uMe = data;
+                $scope.updatedUser = true;
+                $scope.id = data.id;
+                $scope.firstName = data.firstName;
+                $scope.lastName = data.lastName;
+                $scope.username = data.username;
+                $scope.password = '';
+                $scope.street = data.currentAddress.street;
+                $scope.city = data.currentAddress.city;
+                $scope.zip = data.currentAddress.zipCode;
+                $scope.state = data.currentAddress.state;
+                $scope.email = data.email;
+                $scope.phoneNumber = data.phoneNumber;
+            });
+            res.error(function(data, status, headers, config) {
+                window.location.replace("/login.html");
+            });
+
+            $scope.firstName = '';
+            $scope.lastName = '';
+            $scope.username = '';
+            $scope.password = '';
+            $scope.email = '';
+            $scope.phoneNumber = '';
+            $scope.street = '';
+            $scope.city = '';
+            $scope.state = '';
+            $scope.zip = '';
+
+
+        };
 
         $scope.selectUser = function(id){
             window.localStorage.setItem(userId, id);
